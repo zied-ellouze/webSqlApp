@@ -1,33 +1,9 @@
 <?php
-// Name: sqlSyncHandlerTest.php 
-
-/*******************************************************************
- * sqlSyncHandlerTest.php is a part of WebSqlApp, a local WebSQL DB (SQLite) CRUD application.
- * sqlSyncHandlerTest is under development. The first objective is to get the data from MySQL to webSqlApp. The next objective is to do a 2 ways sync.
- * WebSqlApp use WebSqlSync.js to sync to a server.
- * Thanks to Samuel Michelot for webSqlSync.js	https://github.com/orbitaloop/WebSqlSync
- ******************************************************************/
-/*
-Usage: https://github.com/abeauseigle/webSqlApp
-
- Copyright (c) 2013, Alain Beauseigle of AffairesUP.com (R&D tax credit expert in QC, Canada)
- Permission is hereby granted, free of charge, to any person obtaining a
- copy of this software and associated documentation files (the "Software"),
- to deal in the Software without restriction, including without limitation the
- rights to use, copy, modify, merge, publish, distribute, sublicense,
- and/or sell copies of the Software, and to permit persons to whom the Software
- is furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be
- included in all copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
- OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+// sqlSyncHandlerTest.php (futur name: sqlSyncAdapter.php) - used by the webSqlApp (index.html)
+// Goal   : To communicate data from a MySQL query using myJob to a webSqlSync json format. Result: It works one way. All server table data to Client.
+// To do  : Improve to have a complete 2 way sync adapter.
+// Version: 2013-08-16
+// It uses SqlSyncHandler.php 
 		
 	include("SqlSyncHandler.php");
 	
@@ -45,10 +21,10 @@ Usage: https://github.com/abeauseigle/webSqlApp
 	function myJob($handler){
 		
 		// getting a clientData
-		 print_r($handler -> get_clientData());	//php: print_r — Affiche des informations lisibles pour une variable
+		//AB: line removed and it works finally// print_r($handler -> get_clientData());	// usefull for deboging only
 
 		// getting a row json flow
-		echo $handler -> get_jsonData();
+		//AB: line removed and it works finally// echo $handler -> get_jsonData();			// usefull for deboging only
 
 		// My job is to get all the table data from the server and send a json to client
 		$handler -> reply(true,"this is a positive reply", getAllServerData());	// with a dynamic array coming from a MySQL query //function reply($status,$message,$data)
@@ -58,28 +34,53 @@ Usage: https://github.com/abeauseigle/webSqlApp
 		//$handler -> reply(false,"this is a error reply",array('browser' => 'firefox'));
 	}
 
+// Goal   : This function get MySQL data, format it, and send it to webSqlSync.js of my webSqlApp
+// Status : It works.
+// Created: 2013-08-14
+// By (c) : Alain Beauseigle of AffairesUP.com
+
 function getAllServerData(){		//using an associative array
 // Define here the tables to sync Server side param1 is the webSql table name and param2 is the MySQL table name
-$tablesToSync = array(
-//	array( "tableNameWebSql" => 'Categories', "tableName_MySql" => 'RN_Categorie' ),
-	array( "tableNameWebSql" => 'Unites', "tableName_MySql" => 'RN_Unite' )
-);
+	$tablesToSync = array(
+	//	array( "tableNameWebSql" => 'Categories', "tableName_MySql" => 'RN_Categorie' ),
+		array( "tableNameWebSql" => 'Unites', "tableName_MySql" => 'RN_Unite' )
+	);
 
-$getServerData = array();
-connectdb();
-foreach($tablesToSync as $value){
-	$query = "SELECT * FROM " . $value['tableName_MySql'];
-	$sql = mysql_query($query);
-	$sql_result = array();
-    while($row = mysql_fetch_object($sql)){
-		$sql_result[] = $row;
-    }
-	$getServerData[$value['tableNameWebSql']] = $sql_result;
+	$getServerData = array();
+	connectdb();
+	foreach($tablesToSync as $value){
+		$query = "SELECT * FROM " . $value['tableName_MySql'];
+		$sql = mysql_query($query);
+		$sql_result = array();
+		while($row = mysql_fetch_object($sql)){
+			$sql_result[] = $row;
+		}
+		$getServerData[$value['tableNameWebSql']] = $sql_result;
+	}
+	//unset($value); // Usefull ??? Supposé détruire la référence sur le dernier élément
+	return $getServerData;
 }
 
-unset($value); // Utile ??? Supposé détruire la référence sur le dernier élément
-return $getServerData;
+// Goal   : This function will sync MySQL tables with data coming from webSqlApp database
+// Status : In creation. Phase 1: see jsonToMySqlTest.php
+// Created: 2013-08-14...
+// By (c) : Alain Beauseigle of AffairesUP.com
+
+// Inspired by: 	http://appinventor.blogspot.ca/2011/09/android-mysql-connectivity-via-json.html and http://www.daniweb.com/web-development/php/threads/381669/json-to-mysql-with-php
+// 					http://www.webdeveloper.com/forum/showthread.php?207248-From-JSON-to-MySQL
+// 					http://www.daniweb.com/web-development/php/threads/381669/json-to-mysql-with-php
+//					http://www.developphp.com/view_lesson.php?v=860
+/*
+function syncClientData()(){
+	//$jsonString = file_get_contents('php://input');  
+	$jsonArray = json_decode($jsonString, true);  //
+	connectdb();
+
+	mysql_close();  
+	echo "Success";  
 }
+*/
+
 /*
 function getAllUnits(){		    // ToDo: put it seperately in getUnits.php, getContacts.php, ...
 
@@ -95,7 +96,8 @@ function getAllUnits(){		    // ToDo: put it seperately in getUnits.php, getCont
 	return $getUnits;
 }
 */
-function connectdb(){			// ToDo: put it seperately in loginCheck.php and getUnits.php
+
+function connectdb(){			// ToDo: put it seperate in loginCheck.php
 // Prevent caching.
 ///header('Cache-Control: no-cache, must-revalidate');
 ///header('Expires: Mon, 01 Jan 1996 00:00:00 GMT');
@@ -105,10 +107,10 @@ function connectdb(){			// ToDo: put it seperately in loginCheck.php and getUnit
 //$id = $_GET['id'];	// usefull if we need a specific record
 
 //Connexion to the database WITHOUT access control. 
-	$dbhost  = "localhost";
-	$dbname  = "__________";
-	$dbuname = "__________";
-	$dbpass  = "__________";
+$dbhost  = "localhost";
+$dbname  = "__________";
+$dbuname = "__________";
+$dbpass  = "__________";
 	
 	$connect=mysql_pconnect($dbhost, $dbuname, $dbpass) or die("Impossible de se connecter au serveur $server" + mysql_error()); 
 	$db= mysql_select_db($dbname) or die("Could not select database"+ mysql_error());
@@ -116,3 +118,4 @@ function connectdb(){			// ToDo: put it seperately in loginCheck.php and getUnit
 	mysql_set_charset('utf8', $connect);		
 }
 ?>
+
