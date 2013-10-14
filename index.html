@@ -1,43 +1,16 @@
 <!DOCTYPE HTML>
-<!--
- *******************************************************************
- * WebSqlApp is a local WebSQL DB (SQLite) CRUD application using jQuery Mobile for the UI.
- * It also use WebSqlSync to sync to a server. This part is under development.
- * Thanks to Adobe article (Store data in the HTML5 SQLite database) for the initial minimalist script. http://cookbooks.adobe.com/post_Store_data_in_the_HTML5_SQLite_database-19115.html 
- * Thanks to Samuel Michelot for webSqlSync.js	https://github.com/orbitaloop/WebSqlSync
- ******************************************************************/
-
-Usage: https://github.com/abeauseigle/webSqlApp
-
- Copyright (c) 2013, Alain Beauseigle of AffairesUP.com (R&D tax credit expert in QC, Canada)
- Permission is hereby granted, free of charge, to any person obtaining a
- copy of this software and associated documentation files (the "Software"),
- to deal in the Software without restriction, including without limitation the
- rights to use, copy, modify, merge, publish, distribute, sublicense,
- and/or sell copies of the Software, and to permit persons to whom the Software
- is furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be
- included in all copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
- OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
--->
-
 <head>
 	<title>HTML5 WebSQLApp</title>
 <!-- Fonctionnal but the jtsage calendar doesn't work -->
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
-	<link rel="stylesheet" href="css/jquery.ui.datepicker.mobile.css" /> 
-	<link rel="apple-touch-icon-precomposed" href="media/images/apple-touch-icon-precomposed.png" />
+<!-- ??? to have a json with accent ???  header('content-type: application/json; charset=utf-8');-->
 
-<!-- Bon pour Apple et aussi sur Android à notre grand plaisir -->
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
+	<link rel="stylesheet" href="media/css/jquery.ui.datepicker.mobile.css" /> 
+	<link rel="apple-touch-icon-precomposed" href="images/apple-touch-icon-precomposed.png" />
+
+<!-- Bon pour Apple et aussi pour Android à notre grand plaisir -->
 <!-- ToTry: Pour afficher son application en plein écran : 
 	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
@@ -51,7 +24,7 @@ Usage: https://github.com/abeauseigle/webSqlApp
 	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
 
-	<script type="text/javascript" src="lib/webSqlSync.js"></script>
+	<script src="lib/webSqlSync.js" type="application/x-javascript" charset="utf-8"></script>
 	<script type="text/javascript" src="mySyncData.js"></script>
 <!--	<script type="text/javascript" src="mySyncScript.js"></script>	-->
 
@@ -81,27 +54,29 @@ Usage: https://github.com/abeauseigle/webSqlApp
                     <th>Qty (0.00)</th>
 					<th>RadioButton ABC</th>
                     <th>UnitID</th>
-<!--                <th>Delete</th>	-->
+	                <th>Delete</th>	
 				</tr>
 			</thead>
 			<tbody id="listeItem"> </tbody>	
 <!--			<table id="listeItem"> </table> -->
         </table>
-		<div id="uiProgress"> </div>
-		<div id="syncPushOnlyTestResponse">  syncPushOnlyTest:  </div>
+		<div id="uiProgress"> uiProgress: </div>
+<!--		<div id="syncPushOnlyTestResponse">  syncPushOnlyTest:  </div>
 		<div id="syncPullOnlyTestResponse">  syncPullOnlyTest:  </div>
 		<div id="syncPushPingTestResponse">  syncPushPingTest:  </div>
 		<div id="syncPushPullTestResponse">  syncPushPullTest:  </div>
-		<div id="syncUploadUnitsResponse">    syncUploadUnits  :  </div>
-
+		<div id="syncUploadUnitsResponse">   syncUploadUnits :  </div>
+		<div id="authIDetPw">    authIDetPw :  </div>
+-->
         <div data-role="footer" >
 			<a href="#" onclick="loadLoginParam();" data-role="button" data-icon="gear" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">Paramètres</a>
+			<a href="#" onclick="syncWithServer();" data-role="button" data-icon="gear" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">Sync</a>
         	<a href="#" onclick="dropTables();" data-role="button" data-icon="delete" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">Drop tables</a>
-			<a href="#" onclick="syncPushOnlyTest();" data-role="button" data-icon="refresh" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">SyncPushOnlyTest</a>
+<!--		<a href="#" onclick="syncPushOnlyTest();" data-role="button" data-icon="refresh" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">SyncPushOnlyTest</a>
 			<a href="#" onclick="syncPullOnlyTest();" data-role="button" data-icon="refresh" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">SyncPullOnlyTest</a>
 			<a href="#" onclick="syncPushPingTest();" data-role="button" data-icon="refresh" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">SyncPushPingTest</a>
 			<a href="#" onclick="syncPushPullTest();" data-role="button" data-icon="refresh" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">SyncPushPullTest</a>
-			<a href="#" onclick="sqlWebSyncTest();" data-role="button" data-icon="refresh" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">sqlWebSyncTest</a>
+			<a href="#" onclick="sqlWebSyncTest();" data-role="button" data-icon="refresh" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">sqlWebSyncTest</a>	-->
         </div>
 	</div>
 
@@ -167,7 +142,6 @@ Usage: https://github.com/abeauseigle/webSqlApp
 
 			<div data-role="footer" >
 				<a href="#" onClick="updateContact();" data-role="button" data-icon="plus" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">Modifier</a>
-				<a href="#" onClick="dropTables();" data-role="button" data-icon="minus" data-iconpos="right" data-mini="true" data-inline="true" data-theme="a">Reset Form</a>
 			</div>
 		</div>
 	</div>
@@ -202,7 +176,6 @@ Usage: https://github.com/abeauseigle/webSqlApp
 			</fieldset>
 			<div data-role="footer" >
 				<a href="#" onClick="updateFiltreParam();" data-role="button" data-icon="plus" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">Filtrer</a>
-				<a href="#" onClick="dropTables();" data-role="button" data-icon="delete" data-iconpos="right" data-mini="true" data-inline="true" data-theme="a">Reset Form</a>
 			</div>
 		</div>
 	</div>
@@ -222,7 +195,9 @@ Usage: https://github.com/abeauseigle/webSqlApp
      		Email   : <input type="email" name="userEmailEdit" id="userEmailEdit"/>
 
 			<div data-role="footer" >
-				<a href="#" onClick="updateLoginParam();" data-role="button" data-icon="plus" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">Modifier</a>
+				<a href="#" onClick="updateLoginParam();" data-role="button" data-icon="plus" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">Save&Sync</a>
+<!--			<a href="#" onclick="syncWithServer();" data-role="button" data-icon="gear" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">Sync</a>
+				<a href="#" onclick="syncWithServer();" data-role="button" data-icon="gear" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">Save&Sync</a>	-->
 			</div>
 		</div>
 	</div>
@@ -231,12 +206,6 @@ Usage: https://github.com/abeauseigle/webSqlApp
   </body>
   
 <script>
-function hideShow(shown, hidden) {
-	document.getElementById(shown).style.display='block';
-	document.getElementById(hidden).style.display='none';
-	return false;
-}
-
 var liste = document.getElementById('liste'); 
 var idAdd = document.getElementById('idAdd');
 var firstNameAdd = document.getElementById('firstNameAdd');  
@@ -257,173 +226,143 @@ var rbABCAdd = new Array();
 var rbABCEdit = new Array();  //utile?
 //var rbABCEditSel = new Array();  //Alone
 var rbABCFiltre = new Array();  
-var uniteIdAdd = document.getElementById('uniteSelectAdd'); // Déclare unitIdAdd servant à obtenir l'option sélectionnée du sélect 
+var uniteIdAdd = document.getElementById('uniteSelectAdd'); // Déclare unitIdAdd servant à obtenir l'option sélectionnée du select 
 var uniteIdEdit = document.getElementById('uniteSelectEdit'); // 
 var uniteIdFiltre = document.getElementById('uniteSelectFiltre'); // 
-   
-var sqlCreateTableUnites = "CREATE TABLE IF NOT EXISTS Unites (UniteID INTEGER PRIMARY KEY AUTOINCREMENT, UniteSymbol TEXT)";
-var sqlCreateTableContacts = "CREATE TABLE IF NOT EXISTS Contacts (id INTEGER PRIMARY KEY AUTOINCREMENT, firstName TEXT, lastName TEXT, qte TEXT, MaJdate TEXT, cbFait TEXT, rbABC TEXT, UniteID INTEGER)";
-var sqlCreateTableFiltreParam = "CREATE TABLE IF NOT EXISTS FiltreParam (id INTEGER PRIMARY KEY AUTOINCREMENT, firstNameFP TEXT, lastNameFP TEXT, qteFP TEXT, MaJdateFP TEXT, cbFaitFP TEXT, rbABCFP TEXT, uniteIdFP INTEGER)";
-var sqlCreateTableUserParam = "CREATE TABLE IF NOT EXISTS UserParam (id INTEGER PRIMARY KEY AUTOINCREMENT, userId TEXT, password TEXT, email TEXT)";
-var sqlSelectAllContacts = "SELECT * FROM Contacts";
 var sqlSelectFilteredContacts = "";
-var sqlSelectFiltreParam = "SELECT * FROM FiltreParam"; //not used
-var sqlSelectAllUnites = "SELECT * FROM Unites";	//not used
-var sqlInsertContact = "INSERT INTO Contacts (firstName, lastName, qte, MaJdate, cbFait, rbABC, UniteID) VALUES (?, ?, ?, ?, ?, ?)";
-var sqlUpdateContact = "UPDATE Contacts SET firstName = ?, lastName = ?, qte = ?, MaJdate = ?, cbFait = ?, rbABC = ?, UniteID = ? WHERE id = ?";
-var sqlUpdateFiltreParam = "UPDATE FiltreParam SET firstNameFP = ?, lastNameFP = ?, qteFP = ?, MaJdateFP = ?, cbFaitFP = ?, rbABCFP = ?, uniteIdFP = ? WHERE id = 1";
-var sqlUpdateUserParam = "UPDATE UserParam SET userId = ?, password = ?, email = ? WHERE id = 1";
-var deleteContact = "DELETE FROM Contacts WHERE id=?";
-var sqlDropContact = "DROP TABLE Contacts";
-var sqlDropUnites = "DROP TABLE Unites";
-var sqlDropFiltreParam = "DROP TABLE FiltreParam";
-var sqlDropUserParam = "DROP TABLE UserParam";
-var sqlDrop_new_elem = "DROP TABLE new_elem";
-var sqlDrop_sync_info = "DROP TABLE sync_info";
 var dataset;
+var syncSuccess = false;	//to define the syncSuccess for line 288
+   
+//var sqlSelectAllContacts = "SELECT * FROM Contacts";
+//var sqlSelectFiltreParam = "SELECT * FROM FiltreParam"; //not used
+//var sqlSelectAllUnites = "SELECT * FROM Unites";	//not used
+//var sqlUpdateFiltreParam = "UPDATE FiltreParam SET firstNameFP = ?, lastNameFP = ?, qteFP = ?, MaJdateFP = ?, cbFaitFP = ?, rbABCFP = ?, uniteIdFP = ? WHERE id = 1";
+//var sqlUpdateUserParam = "UPDATE UserParam SET userId = ?, password = ?, email = ? WHERE id = 1";
 
 var mywebdb = openDatabase("AddressBook", "1.0", "Address Book", 2 * 1024 * 1024);
-createTable();	// To create all tables for the web app 
+createTable();	// To create all tables for the web app and run initSync of webSyncSql.js to add the tables required for sync 
+hideShow('LoginParamEdit','Liste'); // Go to LoginParamEdit to enter ID & PW, then syncWithServer
 
-// This function is for the first sync. It create the new_elem and the sync_info tables 
-// It uses mySyncData to feed the parameters, but not le database object parameter, 
-// because, it doesn't work via SYNCDATA.database that seems require a string. 
-
-// syncFirst(); // To initialyse the tables to sync with webSqlSync.js // After, go to syncFirst to do the first sync to the server to populate web app tables.
-//DBSYNC.initSync(SYNCDATA.tableToSync, SYNCDATA.database, SYNCDATA.sync_info, SYNCDATA.url, function(result){ // SYNCDATA.database seems not working // Parameters are defined in mySyncData.js 
-
-syncDownloadUnits();										// It will insert a row with a -1 id to have a first id to 0 like MySQL.
-mywebdb.transaction(function(tx) {
-	tx.executeSql("DELETE FROM Unites WHERE UniteID= -1"); 	// We must insert at least one row in the DB. Strange! Then we can delete our -1 row.
-});
-
-/*
-DBSYNC.initSync(SYNCDATA.tableToSync, mywebdb, SYNCDATA.sync_info, SYNCDATA.url, function(result) { // Parameters are defined in mySyncData.js 
-	//syncFirst();
-	if (result.syncOK === true) {
-		alert("first initSync done successfully");
-	}
-});
-*/
-loadUniteSelect();
-loadUniteSelectEdit();
-loadUniteSelectFiltre();
-
-function onError(tx, error) {
-	alert(error.message);
-}
-      
-function showContacts() {
-	listeItem.innerHTML = '';
+//---- FUNCTIONS ----
+function createTable() { 
 	mywebdb.transaction(function(tx) {
-		tx.executeSql(sqlSelectAllContacts, [], function(tx, result) {
-			dataset = result.rows;
-            for (var i = 0, item = null; i < dataset.length; i++) {
-				item = dataset.item(i);
-				listeItem.innerHTML += 
-					'<tr>' 
-//						+ '<td><a href="#" onclick="loadContact('+i+')" data-role="button" data-icon="arrow-r" data-mini="true" data-inline="true" data-iconpos="notext" data-theme="b" ></a></td>'
-						+ '<td><a href="#" onclick="loadContact(' + i + ')" data-role="button" data-icon="arrow-r">Edit</a></td>'
-						+ '<td>' + item['firstName'] + '</td>' 
-						+ '<td>' + item['MaJdate'] + '</td>' 
-						+ '<td>' + item['lastName'] + '</td>' 
-						+ '<td>' + item['cbFait'] + '</td>' 
-						+ '<td>' + item['qte'] + '</td>' 
-						+ '<td>' + item['rbABC'] + '</td>' 
-						+ '<td>' + item['UniteID'] + '</td>' 
-//						+ '<td><a href="#" onclick="deleteRecord('+item['id']+')" data-role="button" data-icon="minus" data-mini="true" data-inline="true" data-iconpos="notext" data-theme="b" ></a></td>'
-					+ '</tr>';
-			}
-		});
+		tx.executeSql("CREATE TABLE IF NOT EXISTS Contacts (id INTEGER PRIMARY KEY AUTOINCREMENT, ContactID INTEGER, firstName TEXT, lastName TEXT, qte TEXT, MaJdate TEXT, cbFait TEXT, rbABC TEXT, UniteID INTEGER, last_sync_date TEXT)", []); // Create Contacts table
+		//tx.executeSql("INSERT INTO Contacts (ContactID, firstName, lastName, qte, MaJdate, cbFait, rbABC, uniteId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", ['1', 'Alain', 'Alarie', '1', '2013-01-01', '1', 'A', '1']);
+		//tx.executeSql("INSERT INTO Contacts (ContactID, firstName, lastName, qte, MaJdate, cbFait, rbABC, uniteId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", ['8', 'Benoît', 'Beaudet', '2', '2013-01-02', '2', 'B', '1']);
+		//tx.executeSql("INSERT INTO Contacts (ContactID, firstName, lastName, qte, MaJdate, cbFait, rbABC, uniteId) VALUES ('8', 'Benoît', 'Beaudet', '2', '2013-01-02', '2', 'B', '1');	");	//On ne peut pas en insérer 2 de suite. Why?
+
+		tx.executeSql("CREATE TABLE IF NOT EXISTS Unites (UniteID INTEGER PRIMARY KEY, UniteSymbol TEXT, last_sync_date TEXT)");	// AUTOINCREMENT removed to have an id not starting with 1
+		tx.executeSql("INSERT INTO Unites(UniteID, UniteSymbol) VALUES(?, ?)", [-1,'C$']); // It insert a row with an ID of -1 to have the next id to 0 like MySQL
+
+		tx.executeSql("CREATE TABLE IF NOT EXISTS FiltreParam (id INTEGER PRIMARY KEY AUTOINCREMENT, firstNameFP TEXT, lastNameFP TEXT, qteFP TEXT, MaJdateFP TEXT, cbFaitFP TEXT, rbABCFP TEXT, uniteIdFP INTEGER)", []); // Create FiltreParam to record the parameters to filter the contacts
+		tx.executeSql("INSERT INTO FiltreParam (firstNameFP, lastNameFP, qteFP, MaJdateFP, cbFaitFP, rbABCFP, uniteIdFP) VALUES (?, ?, ?, ?, ?, ?, ?);", ['', '', '', '1901-01-01', '', '', '']);	//1901-01-01 is the NULL date in SQLite
+
+		tx.executeSql("CREATE TABLE IF NOT EXISTS UserParam (id INTEGER PRIMARY KEY AUTOINCREMENT, userId TEXT, password TEXT, email TEXT)", []); // Create UserParam to record the connection parameters to the Php-MySQL server
+		tx.executeSql("INSERT INTO UserParam (userId, password, email) VALUES (?, ?, ?);", ['', '', '']);
+
 	});
+	tableToSync = [
+        {tableName: 'Contacts', idName: 'id'},
+        {tableName: 'Unites', idName: 'UniteID'}
+    ];
+	mySyncURL = 'sqlSyncAdapter4.php';
+	DBSYNC.initSync(tableToSync, mywebdb, SYNCDATA.sync_info, mySyncURL, callBackInitSync);	//Parameters are defined in mySyncData.js
+	function callBackInitSync () {
+		 $('#uiProgress').html("InitSync Done");
+	}
 }
 
-/* Trial to generalize the 3 following functions
-// Usage:	SbId = id of the selectbox in the form EX: "ClientSelectboxAdd", "ClientSelectboxEdit", or "ClientSelectboxFilter"
-// 			SbQuery = A string for the DB query to use for this select Ex: "SELECT ClientId, ClientName FROM Clients"
-// 			SbChooseOption = A string for a "Choose" line	Ex: -- Choose an options  -- 
-// 			TableIndexField = A string for the table index to store in the DB 					    Ex: "ClientId"
-// 			SbOptionsDbField1 = A string for a DB column to show in the option line 					Ex: "ClientName"
-// 			SbOptionsDbField2 (optionnal) = A string for the 2nd DB column to show in the option line	Ex: "ProjectName"
-// 			SbOptionsDbField3 (optionnal) = A string for the 3rd DB column to show in the option line	Ex: "RessourceName"
-
-function loadSelectbox(SbId, SbQuery, DbIndex, SbChooseOption, SbOptionsDbField1, SbOptionsDbField2, SbOptionsDbField3) {
-	mywebdb.transaction(function (tx) {
-	//populate drop down for unites
-	tx.executeSql('SbQuery', [], function (tx, results) {
-		var len = results.rows.length; 
-		var i=0;
-		if (SbChooseOption == "") {txt="";} else {var txt="<option value='0'>" + SbChooseOption + "</option>";}
-		for (i = 0; i < len; i++){
-???				DbField1 = results.rows.item(i).[SbOptionsDbField1]		// how to do this???
-???				DbField2 = results.rows.item(i).[SbOptionsDbField2]		// how to do this???
-???				DbField3 = results.rows.item(i).[SbOptionsDbField3]		// how to do this???
-???			txt += "<option value=" + TableIndexField + ">" + DbField1 + " - " + DbField2 + " - " + DbField3 + "</option>";
-//to replace:			txt += "<option value=" + results.rows.item(i).UniteID + ">" + results.rows.item(i).UniteID + " " + "Catégorie" + " - " + results.rows.item(i).UniteSymbol + "</option>";
+// begin FUNCTIONS related to DownloadUnits -> to transform for a 2 way sync
+// to do: Function to sync with Activite MySQL table 
+// to add: Get data from other MySQL table 
+// to add: sync data from other MySQL table if there is a change (unites, categories, mandats, client, ...)
+function syncWithServer(callback){	// first sync to download server data (contacts, units, categories, etc.) 
+	//myAuthURL = '';
+	mySyncURL = 'sqlSyncAdapter4.php';
+	username = "";
+	password = "";
+	// Take ID & PW from LoginParamEdit form
+	var username = document.getElementById("userIdEdit").value; 
+	var password = document.getElementById("userPasswordEdit").value; 
+	console.log("319 ID:" + username + " PW:" + password);
+	//saveBandwidth = true; //optional 3e argument de syncNow dans la version 130808 de webSqlSync
+	//Essai pour passer ID = myLoginParameters['userId'] et PW = myLoginParameters['password'] à la requête ajax POST avec username et password param
+	DBSYNC.syncNow(callBackProgress, function(result) {
+	//DBSYNC.syncNow(callBackProgress, username, password, function(result) { // to do: try to pass it in the json
+		syncSuccess = true;	//response sent as a callback by syncNow if the sync is a success
+		callback(syncSuccess);
+		if (result.syncOK === true) {
+			syncSuccess = true;
 		}
-		document.getElementById(SbId).innerHTML=txt;
-	}, null);
-	});
+		else {
+			alert("first SyncNow failed, line 296 of index.html"); //Synchronized error
+		}
+		showFilteredRecords();
+	}); // End syncNow
+}
+/*
+function oldSyncWithServer(callback){	// was called by Sync button of Liste -> not required until firstSyncWithServer?
+	username = "";
+	password = "";
+	getLoginParam(function(myLoginParameters) {	
+		username = myLoginParameters['userId'];
+		console.log("337 ID:" + username + "PW:" + password);
+		password = myLoginParameters['password'];
+	//}); //End getLoginParam
+//syncFirstWithAuth(function(getLoginParam)) {-------------------
+		mySyncURL = 'sqlSyncAdapter4.php';
+		unitsTableToSync = [{tableName: 'Unites', idName: 'UniteID'}];
+		DBSYNC.initSync(unitsTableToSync, mywebdb, SYNCDATA.sync_info, mySyncURL, callBackInitSync);	//Parameters are defined in mySyncData.js
+		function callBackInitSync () {
+			 $('#uiProgress').html("InitSync Done");
+		}
+	}); //End getLoginParam
+	console.log("346 ID:" + username + " PW:" + password);
+	DBSYNC.syncNow(callBackProgress, username, password, function(result) {	//ça sync bien que loginCheck n'ait pas de $_POST (bypassé)
+		syncSuccess = true;	//response sent as a callback by syncNow if the sync is a success
+		callback(syncSuccess);
+		if (result.syncOK === true) {
+			syncSuccess = true;
+		}
+		else {
+			alert("first SyncNow failed, line 333 of index.html"); //Synchronized error
+		}
+	}); // to close the syncNow
+//-------------------
 }
 */
-function loadUniteSelect() {
-	mywebdb.transaction(function (tx) {
-	//populate drop down for unites
-	tx.executeSql('SELECT * FROM Unites', [], function (tx, results) {
-		var len = results.rows.length; 
-		var i=0;
-		//var txt="";
-		var txt="<option value='0'>--Choisir une unité--</option>";
-		for (i = 0; i < len; i++){
-			txt=txt + "<option value=" + results.rows.item(i).UniteID + ">" + results.rows.item(i).UniteID + " " + "Catégorie" + " - " + results.rows.item(i).UniteSymbol + "</option>";
-		}
-		document.getElementById("uniteSelectAdd").innerHTML=txt;
-	}, null);
-	});
-}
 
-function loadUniteSelectEdit() {
-	mywebdb.transaction(function (tx) {
-	//populate drop down for unites
-	tx.executeSql('SELECT * FROM Unites', [], function (tx, results) {
-		var len = results.rows.length; 
-		var i=0;
-		var txt="";
-		for (i = 0; i < len; i++){
-			txt=txt + "<option value=" + results.rows.item(i).UniteID + ">" + results.rows.item(i).UniteID + " " + "Catégorie" + " - " + results.rows.item(i).UniteSymbol + "</option>";
-		}
-		document.getElementById("uniteSelectEdit").innerHTML=txt;
-	}, null);
-	});
-}
 
-function loadUniteSelectFiltre() {
+//Populate all units selectbox with units from webDB, use a callback to force waiting for the webDB result
+function loadUnitesSelect(callback) {
 	mywebdb.transaction(function (tx) {
-	//populate drop down for unites
-	tx.executeSql('SELECT * FROM Unites', [], function (tx, results) {
-		var len = results.rows.length; 
-		var i=0;
-		var txt="";
-		var txt="<option value='0'>--Toutes les unités--</option>";
-		for (i = 0; i < len; i++){
-			txt=txt + "<option value=" + results.rows.item(i).UniteID + ">" + results.rows.item(i).UniteID + " " + "Catégorie" + " - " + results.rows.item(i).UniteSymbol + "</option>";
-		}
-		document.getElementById("uniteSelectFiltre").innerHTML=txt;
-	}, null);
-	});
+		tx.executeSql('SELECT * FROM Unites', [], function(tx, results) {
+			unitsArray = [];
+			var dataset = results.rows; 
+			//console.log("length:" + dataset.length);	//R: 
+			for(var i=0;i<dataset.length;i++){
+				var element=new Object();
+				element.UniteID=dataset.item(i).UniteID;
+				element.UniteSymbol=dataset.item(i).UniteSymbol;
+				unitsArray[i]=element;
+			}
+			//console.log(unitsArray);
+			callback(unitsArray);
+		}); // for tx.executeSql
+	});	//for mywebdb.transaction
 }
+// end FUNCTIONS related to DownloadUnits
 
 function getRadioVal(radioName) {
   var rads = document.getElementsByName(radioName);
-
   for(var rad in rads) {
     if(rads[rad].checked)
       return rads[rad].value;
   }
-
   return null;
 }
 
+// begin FUNCTIONS related to SHOW FILTERED CONTACTS
 function loadFiltreParam() {
 	mywebdb.transaction(function (tx) {
 		tx.executeSql('SELECT * FROM FiltreParam WHERE id=?', [1], function (tx, FPresult) {
@@ -435,19 +374,14 @@ function loadFiltreParam() {
 			lastNameFiltre.value = FPitem['lastNameFP'];
 			qteFiltre.value = FPitem['qteFP'];
 
-			if (FPitem['MaJdateFP']!="" || FPitem['MaJdateFP']!="0001-01-01" ){	// How to empty the date field to not filter on date?
-				MaJdateStringFiltre = FPitem['MaJdateFP']; 
-				//alert('MaJdateStringFiltre = ' + MaJdateStringFiltre ); // we get 2013-05-09, the filter date in the DB. 
-				MaJdateFiltre = new Date(MaJdateStringFiltre); // 
-				//alert('MaJdateFiltre = ' + MaJdateFiltre ); // we get a long date in ISO format.
-				MaJdateISOFiltre = MaJdateFiltre.toISOString().substring(0, 10);
-				//alert('MaJdateISOFiltre = ' + MaJdateISOFiltre ); 
-				document.getElementById("MaJdateFiltre").value=MaJdateISOFiltre; // 
-				//alert('document.getElementById("MaJdateFiltre").value = ' + document.getElementById("MaJdateFiltre").value ); 
+			if (FPitem['MaJdateFP']!="" || FPitem['MaJdateFP']!="1901-01-01"  ){	// 1901-01-01 is to NOT filter on date
+				MaJdateFiltreString = FPitem['MaJdateFP']; //The yyyy-mm-dd (ISO 8601) date format is not supported in Safari and IE.
+				MaJdateFiltreParsed = parseDate(MaJdateFiltreString); // 2012-12-31 -> Mon Dec 31 2012 00:00:00
+				MaJdateFiltreISO = MaJdateFiltreParsed.toISOString().substring(0, 10);	//Mon Dec 31 2012 00:00:00 -> console.log -> 2012-12-31
+				document.getElementById("MaJdateFiltre").value=MaJdateFiltreISO; // 
 			}
 			else { 
 				document.getElementById("MaJdateFiltre").value=""; // 
-				//alert('document.getElementById("MaJdateFiltre").value = ' + document.getElementById("MaJdateFiltre").value ); 
 			}
 
 			cbFaitFiltre = FPitem['cbFaitFP'];
@@ -458,13 +392,11 @@ function loadFiltreParam() {
 			var eleFiltre = document.getElementsByName("rbABCFiltre");
 			for(var i=0;i<eleFiltre.length;i++){
 				if(eleFiltre[i].value == rbABCFiltre) { eleFiltre[i].checked = true; }
-				//alert('eleFiltre i value = ' + eleFiltre[i].value + 'eleFiltre = ' + eleFiltre); 
 			}
 			$('#rbABCFiltre').checkboxradio('refresh');
-			//uniteSelectFiltre.value = FPitem['uniteIdFP']; 
 
 			var uniteSelectFiltre = $("#uniteSelectFiltre");
-			uniteSelectFiltre.val(FPitem['uniteIdFP']).attr('selected', true).siblings('option').removeAttr('selected');    
+			uniteSelectFiltre.val(FPitem['uniteIdFP']).attr('selected', true).siblings('option').removeAttr('selected'); 	//BUG if we want NONE   
 			uniteSelectFiltre.selectmenu('refresh');
 			$('#uniteSelectFiltre').selectmenu('refresh');
 
@@ -475,11 +407,10 @@ function loadFiltreParam() {
 }
 
 function updateFiltreParam() {
-	MaJdateFiltreNew=document.getElementById("MaJdateFiltre").value; // It records the new date in string formet like "2013-05-01"
-	//alert('MaJdateFiltreNew=document.getElementById("MaJdateFiltre").value = ' + document.getElementById("MaJdateFiltre").value ); // On obtient la nouvelle date 2013-05-01 OU? ""
+	MaJdateFiltreNew=document.getElementById("MaJdateFiltre").value; // It records the new date in string format like "2013-05-01"
 // If we erase the date to not filter on the date.
-	if (document.getElementById("MaJdateFiltre").value=="" || document.getElementById("MaJdateFiltre").value == "0001-01-01")
-		{ MaJdateFiltreNew = "0001-01-01";}
+	if (document.getElementById("MaJdateFiltre").value=="")
+		{ MaJdateFiltreNew = "1901-01-01";}
 	else
 		{ MaJdateFiltreNew = document.getElementById("MaJdateFiltre").value;}
 
@@ -490,66 +421,85 @@ function updateFiltreParam() {
 	var uniteIdFiltre=document.getElementById("uniteSelectFiltre").value;
 
 	mywebdb.transaction(function(tx) {
-    	tx.executeSql(sqlUpdateFiltreParam, [firstNameFiltre.value, lastNameFiltre.value, qteFiltre.value, MaJdateFiltreNew, cbFaitFiltre, rbABCFiltre, uniteIdFiltre], filterRecords, onError);
+		//var sqlUpdateFiltreParam = "UPDATE FiltreParam SET firstNameFP = ?, lastNameFP = ?, qteFP = ?, MaJdateFP = ?, cbFaitFP = ?, rbABCFP = ?, uniteIdFP = ? WHERE id = 1";
+    	tx.executeSql("UPDATE FiltreParam SET firstNameFP = ?, lastNameFP = ?, qteFP = ?, MaJdateFP = ?, cbFaitFP = ?, rbABCFP = ?, uniteIdFP = ? WHERE id = 1",
+					[firstNameFiltre.value, lastNameFiltre.value, qteFiltre.value, MaJdateFiltreNew, cbFaitFiltre, rbABCFiltre, uniteIdFiltre]);
 	}); 
-	//alert('MaJdateFiltreNew = ' + MaJdateFiltreNew.value ); 
-}
-
-function filterRecords() {
-	sqlSelectFilteredContacts = 'SELECT * FROM Contacts WHERE 1 = 1';
-
-	if (firstNameFiltre.value==""){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
-	else{sqlSelectFilteredContacts += ' AND firstName = "' + firstNameFiltre.value +'"';}
-
-	if (lastNameFiltre.value==""){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
-	else{sqlSelectFilteredContacts += ' AND lastName = "' + lastNameFiltre.value +'"';}
-
-	if (qteFiltre.value==""){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
-	else{sqlSelectFilteredContacts += ' AND qte = ' + qteFiltre.value;}
-
-//	if (MaJdateFiltreNew.value=="0001-01-01"){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
-//	else{sqlSelectFilteredContacts += ' AND MaJdate = "' + MaJdateFiltreNew +'"';}	// Bug: It takes the today's date, how to desactivate the filter
-
-	if (uniteIdFiltre.value=="0"){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
-	else{sqlSelectFilteredContacts += ' AND UniteID = "' + uniteIdFiltre.value +'"';}	
-
-	if (document.getElementById("cbFaitFiltre").checked){sqlSelectFilteredContacts += ' AND cbFait = 1 ';}
-	else{ sqlSelectFilteredContacts += " AND 1 = 1 ";}
-	
-	if (getRadioVal("rbABCFiltre")==""){ sqlSelectFilteredContacts += " AND 1 = 1 ";} // 
-	else{sqlSelectFilteredContacts += ' AND rbABC = "' + getRadioVal("rbABCFiltre") +'"';}
-	
-	alert('sqlSelectFilteredContacts = ' + sqlSelectFilteredContacts ); 
-
 	showFilteredRecords();
 }
-      
-function showFilteredRecords() {
-	listeItem.innerHTML = '';
-	mywebdb.transaction(function(tx) {
-		tx.executeSql(sqlSelectFilteredContacts, [], function(tx, result) {
-			dataset = result.rows;
-            for (var i = 0, item = null; i < dataset.length; i++) {
-				item = dataset.item(i);
-				listeItem.innerHTML += 
-					'<tr>' 
-//						+ '<td><a href="#" onclick="loadContact('+i+')" data-role="button" data-icon="arrow-r" data-mini="true" data-inline="true" data-iconpos="notext" data-theme="b" ></a></td>'
-						+ '<td><a href="#" onclick="loadContact(' + i + ')" data-role="button" data-icon="arrow-r">Edit</a></td>'
-						+ '<td>' + item['firstName'] + '</td>' 
-						+ '<td>' + item['MaJdate'] + '</td>' 
-						+ '<td>' + item['lastName'] + '</td>' 
-						+ '<td>' + item['cbFait'] + '</td>' 
-						+ '<td>' + item['qte'] + '</td>' 
-						+ '<td>' + item['rbABC'] + '</td>' 
-						+ '<td>' + item['UniteID'] + '</td>' 
-//						+ '<td><a href="#" onclick="deleteRecord('+item['id']+')" data-role="button" data-icon="minus" data-mini="true" data-inline="true" data-iconpos="notext" data-theme="b" ></a></td>'
-					+ '</tr>';
-			}
+
+function showFilteredRecords() {	//Called by updateFiltreParam and syncWithServer
+	getFilterParam (function(myFilterParam) {
+		//Concatenation of the App record filter usable for Filter, Ajout and Edit 
+		sqlSelectFilteredContacts = 'SELECT * FROM Contacts WHERE 1 = 1';
+	
+		if (myFilterParam['firstNameFP']==""){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
+		else{sqlSelectFilteredContacts += ' AND firstName = "' + myFilterParam['firstNameFP'] +'"';}
+	
+		if (myFilterParam['lastNameFP']==""){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
+		else{sqlSelectFilteredContacts += ' AND lastName = "' + myFilterParam['lastNameFP'] +'"';}
+	
+		if (myFilterParam['qteFP']==""){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
+		else{sqlSelectFilteredContacts += ' AND qte = ' + myFilterParam['qteFP'];}
+	
+//		if (myFilterParam['MaJdateFP']=="1901-01-01"){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
+//		else{sqlSelectFilteredContacts += ' AND MaJdate = "' + myFilterParam['MaJdateFP'] +'"';}
+	
+		if (myFilterParam['uniteIdFP']=="0" || myFilterParam['uniteIdFP']=="" ){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
+		else{sqlSelectFilteredContacts += ' AND UniteID = "' + myFilterParam['uniteIdFP'] +'"';}	
+	
+		if (myFilterParam['cbFaitFP']=="1"){sqlSelectFilteredContacts += ' AND cbFait = 1 ';}
+		else{sqlSelectFilteredContacts += " AND 1 = 1 ";}	
+		
+		if (myFilterParam['rbABCFP']==""){ sqlSelectFilteredContacts += " AND 1 = 1 ";} // 
+		else{sqlSelectFilteredContacts += ' AND rbABC = "' + myFilterParam['rbABCFP'] +'"';}
+		//console.log('sqlSelectFilteredContacts :' + sqlSelectFilteredContacts); // R: GOOD
+		
 		});
+
+		listeItem.innerHTML = '';
+		//console.log("sqlSelectFilteredContacts :" + sqlSelectFilteredContacts);
+		mywebdb.transaction(function(tx) {
+			tx.executeSql(sqlSelectFilteredContacts, [], function(tx, result) {		//sqlSelectFilteredContacts = 'SELECT * FROM Contacts WHERE 1 = 1' + ... from filterQuery()
+				dataset = result.rows;
+				for (var i = 0, item = null; i < dataset.length; i++) {
+					item = dataset.item(i);
+					var idToDel = item['id'];
+					//console.log("idToDel :" + idToDel);
+					listeItem.innerHTML += 
+						'<tr>' 
+	//						+ '<td><a href="#" onclick="loadContact('+i+')" data-role="button" data-icon="arrow-r" data-mini="true" data-inline="true" data-iconpos="notext" data-theme="b" ></a></td>'
+							+ '<td><a href="#" onclick="loadContact(' + i + ')" data-role="button" data-icon="arrow-r">Edit</a></td>'
+							+ '<td>' + item['firstName'] + '</td>' 
+							+ '<td>' + item['MaJdate'] + '</td>' 
+							+ '<td>' + item['lastName'] + '</td>' 
+							+ '<td>' + item['cbFait'] + '</td>' 
+							+ '<td>' + item['qte'] + '</td>' 
+							+ '<td>' + item['rbABC'] + '</td>' 
+							+ '<td>' + item['UniteID'] + '</td>' 
+							+ '<td><a href="#" onclick="removeContact(' + idToDel + ');" data-role="button" data-icon="minus" >Delete</a></td>'
+						+ '</tr>';
+				}
+			});
+		hideShow('Liste','Filtre');
+		hideShow('Liste','Ajout');
+		hideShow('Liste','Edit');
 	});
-	hideShow('Liste','Filtre');
 }
 
+function getFilterParam(callback) {
+	filterParamArray = [];
+	mywebdb.transaction(function (tx) {
+		tx.executeSql('SELECT * FROM FiltreParam WHERE id=?', [1], function (tx, results) {
+			var dataset = results.rows;
+			var filterParam = dataset.item(0);
+			callback(filterParam);	// callback to pass the filterParam eventhough it's async.
+		}, null); // for tx.executeSql
+	}, null, null); // for mywebdb.transac
+}
+// end FUNCTIONS related to SHOW FILTERED CONTACTS
+
+// begin FUNCTIONS related to insertContat()
 function insertContact() {
 	var dateStringAdd = document.getElementById("MaJdateAdd").value;
 
@@ -557,18 +507,17 @@ function insertContact() {
 	var rbABCAdd = getRadioVal("rbABCAdd"); // to replace eventualy
 	//$('input[@name="rbABCAdd"]:checked').val(); // en jQuery, to try et enlever la fonction getRadioVal. 
 	if(document.getElementById("cbFaitAdd").checked){cbFaitAdd="1";} else {cbFaitAdd="0";}; // Ça enregistre i si true et 0 si false dans la BD
-	var uniteIdAdd=document.getElementById("uniteSelectAdd").value; // Ça marche
+	var uniteIdAdd = document.getElementById("uniteSelectAdd").value; // Ça marche
 
 	mywebdb.transaction(function(tx) {
-		tx.executeSql("INSERT INTO Contacts (firstName, lastName, qte, MaJdate, cbFait, rbABC, uniteId) VALUES (?, ?, ?, ?, ?, ?, ?);", 
-						[firstNameAdd.value, lastNameAdd.value, qteAdd.value, dateStringAdd, cbFaitAdd, rbABCAdd, uniteIdAdd], resetFormAndShow, onError);
+		tx.executeSql("INSERT INTO Contacts (contactID, firstName, lastName, qte, MaJdate, cbFait, rbABC, uniteId) VALUES (?, ?, ?, ?, ?, ?, ?, ?);", 
+						['-1', firstNameAdd.value, lastNameAdd.value, qteAdd.value, dateStringAdd, cbFaitAdd, rbABCAdd, uniteIdAdd], resetFormAndShow, onError);
 	});
-	hideShow('Liste','Ajout');
 }
  
 function resetFormAndShow(){
 	resetForm();
-	showContacts();
+	showFilteredRecords();
 }
 
 function resetForm(){
@@ -596,18 +545,30 @@ function resetForm(){
 
 	document.getElementById("uniteSelectAdd").options[0].selected=true; 
 }
+// end FUNCTIONS related to insertContat()
 
+//Fonction pour que Safari puisse lire la date de la BD, car Safari n'accepte pas le format aaaa-mm-jj , ni aaaa/mm/jj
+//parseDate('2011-12-31'); // '2011-12-31' -> Mon Dec 31 2011 00:00:00
+function parseDate(input) {
+	var parts = input.match(/(\d+)/g);
+	return new Date(parts[0], parts[1]-1, parts[2]);
+	//Solution 2?
+	//var dateParts = "2012-12-31".split("-");
+	//var your_date = new Date(dateParts[0], dateParts[1]-1, dateParts[2]);
+}
+
+// begin FUNCTIONS related to edit conctact
 function loadContact(i) {
 	var itemSel = dataset.item(i); 
 	idEdit.value = itemSel['id'];
 	firstNameEdit.value = itemSel['firstName'];
 	lastNameEdit.value = itemSel['lastName'];
 	qteEdit.value = itemSel['qte'];
-
-	MaJdateStringEdit = itemSel['MaJdate'];
-	MaJdateEdit = new Date(MaJdateStringEdit); // 
-	MaJdateISOEdit = MaJdateEdit.toISOString().substring(0, 10);
-	document.getElementById("MaJdateEdit").value=MaJdateISOEdit; // 
+	MaJdateEditString = itemSel['MaJdate'];	//format '2011-12-31' accepté par Chrome, mais Safari n'accepte que le format 2011/12/31. The yyyy-mm-dd (ISO 8601) date format is not supported in Safari and IE.
+	MaJdateEditParsed = parseDate(MaJdateEditString); // 2012-12-31 -> Mon Dec 31 2012 00:00:00
+	MaJdateEditISO = MaJdateEditParsed.toISOString().substring(0, 10);	//Mon Dec 31 2012 00:00:00 -> console.log -> 2012-12-31
+	console.log(MaJdateEditISO);
+	document.getElementById("MaJdateEdit").value=MaJdateEditISO; // 
 
 	cbFaitEdit = itemSel['cbFait'];
 	if(cbFaitEdit=="1"){ $('#cbFaitEdit').prop('checked',true).checkboxradio('refresh');}
@@ -634,16 +595,9 @@ function loadContact(i) {
 
 	hideShow('Edit','Liste');
 }
-// ref: http://www.intelligrape.com/blog/2012/09/23/dynamically-changing-select-value-of-jquery-mobile-select-box/
-/*
-function setOptionValue(value){
-  var reminderSettings = $("#reminderSettings");
-  reminderSettings.val(value).attr('selected', true).siblings('option').removeAttr('selected');    
-}
-*/
+
 function updateContact() {
 	var MaJdateEdit=document.getElementById("MaJdateEdit").value; // Ça enregistre la nouvelle date en formet string "2013-05-02"
-	//var dateStringEdit = document.getElementById("MaJdate").value; // inutile???
 
 	if(document.getElementById("cbFaitEdit").checked){cbFaitEdit="1";} else {cbFaitEdit="0";} // Ça enregistre 1 si true et 0 si false dans la BD. :-)
 
@@ -652,277 +606,112 @@ function updateContact() {
 
 	var uniteIdEdit=document.getElementById("uniteSelectEdit").value;
 	mywebdb.transaction(function(tx) {
-    	tx.executeSql(sqlUpdateContact, [firstNameEdit.value, lastNameEdit.value, qteEdit.value, MaJdateEdit, cbFaitEdit, rbABCEdit, uniteIdEdit, idEdit.value], resetFormAndShow, onError);
+		//var sqlUpdateContact = "UPDATE Contacts SET firstName = ?, lastName = ?, qte = ?, MaJdate = ?, cbFait = ?, rbABC = ?, UniteID = ? WHERE id = ?";
+    	tx.executeSql("UPDATE Contacts SET firstName = ?, lastName = ?, qte = ?, MaJdate = ?, cbFait = ?, rbABC = ?, UniteID = ? WHERE id = ?", [firstNameEdit.value, lastNameEdit.value, qteEdit.value, MaJdateEdit, cbFaitEdit, rbABCEdit, uniteIdEdit, idEdit.value], resetFormAndShow, onError);
 	}); 
-	hideShow('Liste','Edit');
 }
-      
-function loadLoginParam() {
+// end FUNCTIONS related to edit Contact
+
+function removeContact(id) {	//Changed deleteContact(id) to removeContacts(id) to work or change deleteContact to sqlDeleteContact in tx.executeSql. 
+	var r=confirm("Do you really want to delete this record?");	// Confirm box
+	if (r==true) {
+		mywebdb.transaction(function(tx) {
+			tx.executeSql("DELETE FROM Contacts WHERE id=?", [id], showFilteredRecords(), onError);
+		});
+	}
+}
+
+// begin FUNCTIONS related to edit loginParam
+function loadLoginParam() {	//called by Liste form button PARAMETER
 	mywebdb.transaction(function (tx) {
 		// To try: tx.executeSql('SELECT TOP 1 FROM UserParam', [], function (tx, UPresult) {
 		tx.executeSql('SELECT * FROM UserParam WHERE id=?', [1], function (tx, UPresult) {
-//			var lenUParam = UPresult.rows.length;
+			console.log("UPresult.rows.length" + UPresult.rows.length);
 			dataset = UPresult.rows;
 			loginParam = dataset.item(0);
 			userIdEdit.value = loginParam['userId'];
 			userPasswordEdit.value = loginParam['password'];
 			userEmailEdit.value = loginParam['email'];
-		}) // for tx.executeSql
+		}); // for tx.executeSql
 	}); // for mywebdb.transac
 	hideShow('LoginParamEdit','Liste');
 }
 
-function updateLoginParam() {
+function updateLoginParam() {	//called by loginParam form button MODIFY
 	mywebdb.transaction(function(tx) {
     	//tx.executeSql(sqlUpdateUserParam, [userIdEdit.value, passwordEdit.value, emailEdit.value], hideShow('Liste','Edit'), onError);
-    	tx.executeSql(sqlUpdateUserParam, [userIdEdit.value, userPasswordEdit.value, userEmailEdit.value]);
+    	//tx.executeSql(sqlUpdateUserParam, [username, password, userEmailEdit.value]);
+		//var sqlUpdateUserParam = "UPDATE UserParam SET userId = ?, password = ?, email = ? WHERE id = 1";
+    	tx.executeSql("UPDATE UserParam SET userId = ?, password = ?, email = ? WHERE id = 1", [userIdEdit.value, userPasswordEdit.value, userEmailEdit.value]);
     });
+	syncWithServer(function(syncSuccess){		// callback is used to wait the server query result.  The data is received from the server when syncSuccess is true.
+		if(syncSuccess==true){
+			mywebdb.transaction(function(tx){
+				tx.executeSql("DELETE FROM Unites WHERE UniteID= -1"); 	// We must insert at least one row in the DB  with a -1 id to have a first id equal to 0 like MySQL. Strange! Then we can delete our -1 row.
+			});
+			loadUnitesSelect(function(unitsArray) {	//the function is a callback to wait for the query result.
+				var txt   = "";
+				for (i=0; i < unitsArray.length; i++){
+					txt=txt + "<option value=" + unitsArray[i].UniteID + ">" + unitsArray[i].UniteID + " " + "Catégorie" + " - " + unitsArray[i].UniteSymbol + "</option>"; // BUG: l'option 0 n'est pas selected pour Ajout et Filtre
+				}
+				var txtAdd    = "<option value='0'>--Choisir une unité--</option>" + txt;
+				var txtEdit   = "" + txt;
+				var txtFiltre = "<option value='0'>--Toutes les unités--</option>" + txt;
+				document.getElementById("uniteSelectAdd").innerHTML=txtAdd;
+				document.getElementById("uniteSelectEdit").innerHTML=txtEdit;
+				document.getElementById("uniteSelectFiltre").innerHTML=txtFiltre;
+			});
+		}
+	});
 	hideShow('Liste','LoginParamEdit');
 }
+// end FUNCTIONS related to edit loginParam
       
-function deleteRecord(id) {
-	mywebdb.transaction(function(tx) {
-		tx.executeSql(deleteContact, [id], showContacts, onError);
-    });
-	resetForm();
-}
-
-// test to know if the server accept a json from the webSqlApp 
-// using an Ajax request (just to know if the server config is OK)
-function syncPushOnlyTest() {
-	myURL = 'http://www.mysite.com/webSqlApp/syncPushOnlyTest.php'; //___________
-	myObject = 	'{"result":"OK","message":"this is a positive reply","sync_date":1371753757,"data":[{"UniteID":"0","UniteSymbol":"h"},{"UniteID":"1","UniteSymbol":"km"},{"UniteID":"2","UniteSymbol":"$"},{"UniteID":"3","UniteSymbol":"U$"},{"UniteID":"4","UniteSymbol":"\u20ac"},{"UniteID":"5","UniteSymbol":"$P"}]}';
-
-	var str_json = JSON.stringify(myObject)
-	var request= new window.XMLHttpRequest();
-	request.overrideMimeType = 'application/json;charset=UTF-8';
-	request.open("POST", myURL,true);
-	request.setRequestHeader("Content-type", "application/json");
-	request.send(str_json);
-
-    $('#syncPushOnlyTestResponse').html("SyncPushOnlyTest done ");
-	alert("SyncPush is a Success " + myObject);
-}
-
-// test to know if the server can send a json to the webSqlApp using webSyncHandler.php		
-// syncPullOnlyTest.php return a json that the data comes from a mySQL query
-// It uses jQuery to request the json (just to know if the server config is OK)
-function syncPullOnlyTest() {
-    $.getJSON('http://www.mywebsite.com/webSqlApp/syncPullOnlyTest.php',
-        function(myJsonObject) {
-			alert(myJsonObject.result);
-			alert(myJsonObject.message);
-			alert(myJsonObject.sync_date);
-			alert(myJsonObject.data[2].UniteID);
-			alert(myJsonObject.data[2].UniteSymbol);
-            $('#syncPullOnlyTestResponse').append(myJsonObject.data[4].UniteSymbol);
-        }
-	);
-	//alert("SyncPull is a Success " + myJsonObject.data[4].UniteSymbol); // this line doesn't works.
-}
-
-// test to know if the server accept a json from the webSqlApp and if it return a json from a MySQL query 
-// using an Ajax request (just to know if the server config is OK)
-function syncPushPingTest() {
-	myURL = 'http://www.mywebsite.com/webSqlApp/syncPushOnlyTest.php'; //___________
-	myObject = 	'{"result":"OK","message":"this is a positive reply","sync_date":1371753757,"data":[{"UniteID":"0","UniteSymbol":"h"},{"UniteID":"1","UniteSymbol":"km"},{"UniteID":"2","UniteSymbol":"$"},{"UniteID":"3","UniteSymbol":"U$"},{"UniteID":"4","UniteSymbol":"\u20ac"},{"UniteID":"5","UniteSymbol":"$P"}]}';
-
-	var str_json = JSON.stringify(myObject)
-	var request= new window.XMLHttpRequest();
-	request.overrideMimeType = 'application/json;charset=UTF-8';
-	request.open("POST", myURL,true);
-	request.setRequestHeader("Content-type", "application/json");
-	request.send(str_json);
-
-    $('#syncPushPingTestResponse').html("syncPushPingTest done, ");
-	//alert("SyncPush is a Success ");
-
-	// get feedback proving that the server got the data: get the sent data from the server
-    $.getJSON('http://www.mywebsite.com/webSqlApp/syncPullOnlyTest.php',
-        function(myJsonObject) {
-			alert(myJsonObject.result);
-			alert(myJsonObject.message);
-			alert(myJsonObject.sync_date);
-			alert(myJsonObject.data[2].UniteID);
-			alert(myJsonObject.data[2].UniteSymbol);
-            $('#syncPushPingTestResponse').append(myJsonObject.message);	// if you receive the right server answer, the json bridge works fine.
-        }
-	);
-}
+// begin FUNCTIONS for testing server communication
+// test to know if the server accept a json from the webSqlApp, if it create a INSERT INTO to MySQL from the json //and if it return a json from a MySQL query 
 /*
-// test to know if the server accept a json from the webSqlApp data coming from webSqlSync and if it return a json from a MySQL query 
-function syncPushDataTest() {
-	myURL = 'http://www.mywebsite.com/webSqlApp/syncPushDataTest.php'; //___________
-
-	//myJsonSent = 	'{"result":"OK","message":"this is a positive reply","sync_date":1371753757,"data":[{"UniteID":"0","UniteSymbol":"h"},{"UniteID":"1","UniteSymbol":"km"},{"UniteID":"2","UniteSymbol":"$"},{"UniteID":"3","UniteSymbol":"U$"},{"UniteID":"4","UniteSymbol":"\u20ac"},{"UniteID":"5","UniteSymbol":"$P"}]}';
-
-	//Client data to send
-	mySentJson = '{
-	    	"result":"OK",
-			"message":"this is a positive reply",
-			"sync_date":1371753757,
-			
-			"info": {
-	        "userEmail": "alainb@gmail.com",
-	        "appName": "myWebSqlApp",
-	        "lastSyncDate": 1326553035406,
-	        "userAgent": "Chrome27.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/534.52.7 (KHTML, like Gecko) Version/5.1.2 Safari/534.52.7",
-	        "myApp_version": "0.1 (webSqlApp)",
-	        "lng": "fr",
-	        "device_uuid": "1234567890"
-	    	},
-	    	
-			"data": {
-	        "Unite": [{
-	            "UniteID": 100330,
-	            "UniteNom": "Yen",
-	            "UniteSymbol": "Y$",
-	            "nbOK": 1,
-	            "nbKO": 0
-	        	},
-	        	{
-	            "UniteID": 100330,
-	            "UniteNom": "Yen",
-	            "UniteSymbol": "Y$",
-	            "nbOK": 1,
-	            "nbKO": 0
-	        },
-	        {	        }]
-	    }
-	}';
-
-	DBSYNC._sendDataToServer (mySentJson, function(serverAnswer) {
-*/
-/*	Old way to send a json string (replaced by the webSqlSync.js method 
-	var str_json = JSON.stringify(myObject)
-	var request= new window.XMLHttpRequest();
-	request.overrideMimeType = 'application/json;charset=UTF-8';
-	request.open("POST", myURL,true);
-	request.setRequestHeader("Content-type", "application/json");
-	request.send(str_json);
-*/
-/*    $('#syncPushPingTestResponse').html("syncPushPingTest done, ");
-	//alert("SyncPush is a Success ");
-
-	// get feedback proving that the server got the data: get the sent data from the server
-    $.getJSON('http://www.mywebsite.com/webSqlApp/syncPullOnlyTest.php',
-        function(myJsonObject) {
-			alert(myJsonObject.result);
-			alert(myJsonObject.message);
-			alert(myJsonObject.sync_date);
-			alert(myJsonObject.data[2].UniteID);
-			alert(myJsonObject.data[2].UniteSymbol);
-            $('#syncPushPingTestResponse').append(myJsonObject.message);	// if you receive the right server answer, the json bridge works fine.
-        }
-	);
-}
-*/
-
-// test to know if the server accept a json from the webSqlApp and if it return a json from a MySQL query 
-function syncPushInDbTest() {
-	myURL = 'http://www.mywebsite.com/webSqlApp/syncPushInDbTest.php'; //___________
-	myObject = 	'{"result":"OK","message":"this is a positive reply","sync_date":1371753757,"data":[{"UniteID":"0","UniteSymbol":"h"},{"UniteID":"1","UniteSymbol":"km"},{"UniteID":"2","UniteSymbol":"$"},{"UniteID":"3","UniteSymbol":"U$"},{"UniteID":"4","UniteSymbol":"\u20ac"},{"UniteID":"5","UniteSymbol":"$P"}]}';
-
-	var str_json = JSON.stringify(myObject)
-	var request= new window.XMLHttpRequest();
-	request.overrideMimeType = 'application/json;charset=UTF-8';
-	request.open("POST", myURL,true);
-	request.setRequestHeader("Content-type", "application/json");
-	request.send(str_json);
-
-    $('#syncPushInDbTestResponse').html("syncPushInDbTest done, ");
-	//alert("SyncPush is a Success ");
-
-    $.getJSON('http://www.mywebsite.com/webSqlApp/syncPullDataTest.php',
-        function(myJsonObject) {
-			alert(myJsonObject.result);
-			alert(myJsonObject.message);
-			alert(myJsonObject.sync_date);
-			alert(myJsonObject.data[2].UniteID);
-			alert(myJsonObject.data[2].UniteSymbol);
-            $('#syncPushPingTestResponse').append(myJsonObject.message);	// if you receive the right server answer, the json bridge works fine.
-        }
-	);
-}
-
-function syncDownloadUnits(){	// Fonctionnal but not totally: The 2 tables for the sync are created. 
-	//mySyncURL = 'http://www.mywebsite.com/webSqlApp/syncPullOnlyTest.php'; //___________
-	mySyncURL = 'http://www.mywebsite.com/webSqlApp/sqlSyncAdapter.php'; //___________
-	//myObject = 	'{"result":"OK","message":"this is a positive reply","sync_date":1371753757,"data":[{"UniteID":"0","UniteSymbol":"h"},{"UniteID":"1","UniteSymbol":"km"},{"UniteID":"2","UniteSymbol":"$"},{"UniteID":"3","UniteSymbol":"U$"},{"UniteID":"4","UniteSymbol":"\u20ac"},{"UniteID":"5","UniteSymbol":"$P"}]}';
-	unitsTableToSync = [
-        {tableName: 'Unites', idName: 'UniteID'}
-    ];
-
-	DBSYNC.initSync(unitsTableToSync, mywebdb, SYNCDATA.sync_info, mySyncURL, function(result){	//Parameters are defined in mySyncData.js
-		DBSYNC.syncNow(callBackProgress, function(result) {
-			if (result.syncOK === true) {
+function syncUploadUnits() {
+	myURL = SYNCDATA.url + '/' +	'syncUploadUnits.php';
+	//saveBandwidth (default false): if true, the client will not send a request to the server if there is no local changes
+	saveBandwidth = true; //3e argument de syncNow dans la version 130808 de webSqlSync
+    $.getJSON(myURL, function(myJsonObject) {
+		DBSYNC.syncNow(saveBandwidth, callBackProgress, function(result2) {
+			if (result2.syncOK === true) {
 				alert("mySync Success ");  //Synchronized successfully
 			}
 			else {
-				alert("mySync Not dones"); //Synchronized error
+				alert("mySyncNow Ln877 Not done"); //Synchronized error
 			}
-		}); // to close the syncNow
-	}); // to close the iniytSynnc
+		}); // to close the DBSYNC.syncNow
+	}); // to close the jQuery.getJSON
+}
+*/
+function hideShow(shown, hidden) {
+	document.getElementById(shown).style.display='block';
+	document.getElementById(hidden).style.display='none';
+	return false;
 }
 
-// test to know if the server accept a json from the webSqlApp, if it create a INSERT INTO to MySQL from the json //and if it return a json from a MySQL query 
-function syncUploadUnits() {
-	myURL = 'http://www.mywebsite.com/webSqlApp/syncUploadUnits.php'; //___________
-    $.getJSON(myURL,
-        function(myJsonObject) {
-			DBSYNC.syncNow(callBackProgress, function(result) {
-				if (result.syncOK === true) {
-				alert("mySync Success ");  //Synchronized successfully
-				}
-				else {
-				alert("mySync Not dones"); //Synchronized error
-				}
-			});
-		}
-    ); // to close the jQuery.getJSON
-}
-
-// message, persent and msgKey comes from syncNow of webSqlSync.js line 128 and 136
+// message, percent and msgKey comes from syncNow of webSqlSync.js line 128 and 136
 // Ex: message= "mon message", percent= 20, msgKey= "sendData"  
 function callBackProgress (message, percent, msgKey) {
      $('#uiProgress').html(message+' ('+percent+'%)');
 }
 
-function createTable() { 
-	mywebdb.transaction(function(tx) {
-		tx.executeSql(sqlCreateTableContacts, [], showContacts, onError); // Create Contacts table
-		//tx.executeSql(sqlCreateTableUnites, []);
-    	tx.executeSql("UPDATE SQLITE_SEQUENCE SET seq = -1 WHERE name = 'Contacts'");	//, []); //ne marche pas
-		tx.executeSql("INSERT INTO Contacts (firstName, lastName, qte, MaJdate, cbFait, rbABC, uniteId) VALUES (?, ?, ?, ?, ?, ?, ?);", ['Z', 'Z', '9', '2013-05-09', '1', 'C', '1']);
-
-		tx.executeSql("CREATE TABLE IF NOT EXISTS Unites (UniteID INTEGER PRIMARY KEY, UniteSymbol TEXT)");	// AUTOINCREMENT removed to have an id not starting with 1
-    	tx.executeSql("UPDATE SQLITE_SEQUENCE SET seq = -1 WHERE name = 'Unites'");	//, []); //It does'nt works if the primary key is AUTOINCREMENT
-		tx.executeSql("INSERT INTO Unites(UniteID, UniteSymbol) VALUES(?, ?)", [-1,'C$']); // It insert a row with an ID of -1 to have the next id to 0 like MySQL
-//		tx.executeSql("INSERT INTO Unites(UniteSymbol) VALUES(?)", ['hours']); 
-		//tx.executeSql("DELETE FROM Unites WHERE UniteID= -1"); 	// To have a first id to 0, we must insert at least one row in the DB. Strange! Then we can delete our -1 row.
-//		tx.executeSql("INSERT INTO Unites(UniteSymbol) VALUES(?)", ['miles']); 
-//		tx.executeSql("INSERT INTO Unites(UniteSymbol) VALUES(?)", ['U$']); 
-		// Note: The sync should add 5 other units
-
-		tx.executeSql(sqlCreateTableFiltreParam, [], showContacts, onError); // Create FiltreParam pour enregistrer les paramètres de filtrage de Activites
-		tx.executeSql("INSERT INTO FiltreParam (firstNameFP, lastNameFP, qteFP, MaJdateFP, cbFaitFP, rbABCFP, uniteIdFP) VALUES (?, ?, ?, ?, ?, ?, ?);", ['Z', 'ZZ', '1', '2013-06-01', '1', 'A', '1']);
-
-		tx.executeSql(sqlCreateTableUserParam, [], showContacts, onError); // Create UserParam pour enregistrer les paramètres de connexion au serveur Php-MySQL
-		tx.executeSql("INSERT INTO UserParam (userId, password, email) VALUES (?, ?, ?);", ['alan', 'alan', 'a@abc.com']);
-	});
+function onError(tx, error) {
+	alert(error.message);
 }
-      
+
 function dropTables() {
 	mywebdb.transaction(function(tx) {
-    	tx.executeSql(sqlDropContact, [], showContacts, onError);
-    	tx.executeSql(sqlDropUnites, [], showContacts, onError);
-    	tx.executeSql(sqlDropFiltreParam, [], showContacts, onError);
-    	tx.executeSql(sqlDropUserParam, [], showContacts, onError);
-    	tx.executeSql(sqlDrop_new_elem, [], showContacts, onError);
-    	tx.executeSql(sqlDrop_sync_info, [], showContacts, onError);
+    	tx.executeSql("DROP TABLE Contacts", []);
+    	tx.executeSql("DROP TABLE Unites", []);
+    	tx.executeSql("DROP TABLE FiltreParam", []);
+    	tx.executeSql("DROP TABLE UserParam", []);
+    	tx.executeSql("DROP TABLE new_elem", []);
+    	tx.executeSql("DROP TABLE sync_info", []);
     });
 	resetForm();
 }
-
 </script>
 </html>​

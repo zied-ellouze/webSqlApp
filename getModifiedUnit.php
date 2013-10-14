@@ -1,7 +1,7 @@
 <?php
-include "loginCheck.php";
+//include "loginCheck.php";
 
-if ($CLnum_rows){
+//if ($CLnum_rows){
 //	switch ($_REQUEST['Version']){
 //    case $KEY_RDNET:
       $query = "SELECT UniteID, UniteSymbol"
@@ -16,17 +16,12 @@ if ($CLnum_rows){
   	 default: echo $_REQUEST['Version'];
 	}		
 */
-  $result = mysql_query($query);
-  $num_rows = mysql_num_rows($result);
-  
-  if ($num_rows){
-    while($e = mysql_fetch_assoc($result)) {
-       $info[] = $e;
-    }
-  }else{
-  	$info[] = $query;
-  }
-	print(json_encode($info));
-}
+	$sql_result = array();
+	$sql = mysql_query($query);
+	while($row = mysql_fetch_object($sql)){
+		$sql_result[] = $row;
+	}
+	return $sql_result;
 
+//} end if ($CLnum_rows) used for authentication
 ?>
