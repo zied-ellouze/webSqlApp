@@ -13,6 +13,7 @@ Installing
 - I modified the webSqlSync.js to treat the data from the server with a double id (one for the server and on for the app). When the contact id is null, it means that the record was created in MySQL first.
 - The contacts table is two way synced.
 - The units table is one way sync (server to client). It's just to feed the options of the select box.
+- I included 3 php test files to help you to debug your server side php files. It's usefull to do unit testing.
  
 How it works
 ==========
