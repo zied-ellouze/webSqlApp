@@ -14,6 +14,14 @@ Installing
 - The contacts table is two way synced.
 - The units table is one way sync (server to client). It's just to feed the options of the select box.
  
+How it works
+==========
+I use 2 indexes (one for the client DB and one for the server DB). 
+I modifyed webSqlSync.js to handle inserted records directly into MySQL that have a null client id value.
+I added the _buildInsertSQLWithIdNull function to webSqlSync.js to determine if we INSERT or UPDATE the webSQL DB from the ServerJson
+When I insert a record in webSQL (with the client), I use -1 in the "server" ID to inform the server adapter that's a record newly created with the app. 
+"-1" means to do an INSERT INTO MySQL.
+ 
 I hope it will help you to create your own webSql app. You are welcome to improve the code of the 2 ways sync.
 
 ## Limitations:
