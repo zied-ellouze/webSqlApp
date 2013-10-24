@@ -47,6 +47,8 @@
         	<thead>
             	<tr class="odd">
 					<th>Edit</th>
+					<th>id</th>
+					<th>ContactID</th>
                     <th>FirstName</th>
                     <th>Date de r&eacute;alisation</th>
                     <th>LastName</th>
@@ -54,6 +56,7 @@
                     <th>Qty (0.00)</th>
 					<th>RadioButton ABC</th>
                     <th>UnitID</th>
+                    <th>last_sync_date</th>
 	                <th>Delete</th>	
 				</tr>
 			</thead>
@@ -61,22 +64,10 @@
 <!--			<table id="listeItem"> </table> -->
         </table>
 		<div id="uiProgress"> uiProgress: </div>
-<!--		<div id="syncPushOnlyTestResponse">  syncPushOnlyTest:  </div>
-		<div id="syncPullOnlyTestResponse">  syncPullOnlyTest:  </div>
-		<div id="syncPushPingTestResponse">  syncPushPingTest:  </div>
-		<div id="syncPushPullTestResponse">  syncPushPullTest:  </div>
-		<div id="syncUploadUnitsResponse">   syncUploadUnits :  </div>
-		<div id="authIDetPw">    authIDetPw :  </div>
--->
         <div data-role="footer" >
 			<a href="#" onclick="loadLoginParam();" data-role="button" data-icon="gear" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">Paramètres</a>
-			<a href="#" onclick="syncWithServer();" data-role="button" data-icon="gear" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">Sync</a>
+			<a href="#" onclick="NEXTsyncWithServer();" data-role="button" data-icon="gear" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">Sync</a>
         	<a href="#" onclick="dropTables();" data-role="button" data-icon="delete" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">Drop tables</a>
-<!--		<a href="#" onclick="syncPushOnlyTest();" data-role="button" data-icon="refresh" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">SyncPushOnlyTest</a>
-			<a href="#" onclick="syncPullOnlyTest();" data-role="button" data-icon="refresh" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">SyncPullOnlyTest</a>
-			<a href="#" onclick="syncPushPingTest();" data-role="button" data-icon="refresh" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">SyncPushPingTest</a>
-			<a href="#" onclick="syncPushPullTest();" data-role="button" data-icon="refresh" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">SyncPushPullTest</a>
-			<a href="#" onclick="sqlWebSyncTest();" data-role="button" data-icon="refresh" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">sqlWebSyncTest</a>	-->
         </div>
 	</div>
 
@@ -196,8 +187,6 @@
 
 			<div data-role="footer" >
 				<a href="#" onClick="updateLoginParam();" data-role="button" data-icon="plus" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">Save&Sync</a>
-<!--			<a href="#" onclick="syncWithServer();" data-role="button" data-icon="gear" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">Sync</a>
-				<a href="#" onclick="syncWithServer();" data-role="button" data-icon="gear" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">Save&Sync</a>	-->
 			</div>
 		</div>
 	</div>
@@ -265,27 +254,33 @@ function createTable() {
         {tableName: 'Contacts', idName: 'id'},
         {tableName: 'Unites', idName: 'UniteID'}
     ];
-	mySyncURL = 'sqlSyncAdapter4.php';
+	mySyncURL = 'webSqlSyncAdapter.php';
 	DBSYNC.initSync(tableToSync, mywebdb, SYNCDATA.sync_info, mySyncURL, callBackInitSync);	//Parameters are defined in mySyncData.js
 	function callBackInitSync () {
 		 $('#uiProgress').html("InitSync Done");
 	}
 }
 
+function NEXTsyncWithServer() {	//called by list button SYNC
+	syncWithServer(function(syncSuccess){		// callback is used to wait the server query result.  The data is received from the server when syncSuccess is true.
+	});
+}
+
 // begin FUNCTIONS related to DownloadUnits -> to transform for a 2 way sync
 // to do: Function to sync with Activite MySQL table 
 // to add: Get data from other MySQL table 
 // to add: sync data from other MySQL table if there is a change (unites, categories, mandats, client, ...)
-function syncWithServer(callback){	// first sync to download server data (contacts, units, categories, etc.) 
+//// Called like this: syncWithServer(function(syncSuccess){		// callback is used to wait the server query result.  The data is received from the server when syncSuccess is true.
+function syncWithServer(callback){	// First sync: It downloads server data (contacts, units, categories, etc.) 
 	//myAuthURL = '';
-	mySyncURL = 'sqlSyncAdapter4.php';
+	mySyncURL = 'webSqlSyncAdapter.php';
 	username = "";
 	password = "";
 	// Take ID & PW from LoginParamEdit form
 	var username = document.getElementById("userIdEdit").value; 
 	var password = document.getElementById("userPasswordEdit").value; 
 	console.log("319 ID:" + username + " PW:" + password);
-	//saveBandwidth = true; //optional 3e argument de syncNow dans la version 130808 de webSqlSync
+	saveBandwidth = true; //optional 3e argument de syncNow dans la version 130808 de webSqlSync
 	//Essai pour passer ID = myLoginParameters['userId'] et PW = myLoginParameters['password'] à la requête ajax POST avec username et password param
 	DBSYNC.syncNow(callBackProgress, function(result) {
 	//DBSYNC.syncNow(callBackProgress, username, password, function(result) { // to do: try to pass it in the json
@@ -298,7 +293,8 @@ function syncWithServer(callback){	// first sync to download server data (contac
 			alert("first SyncNow failed, line 296 of index.html"); //Synchronized error
 		}
 		showFilteredRecords();
-	}); // End syncNow
+//	}); // End syncNow
+	},saveBandwidth); // End syncNow
 }
 /*
 function oldSyncWithServer(callback){	// was called by Sync button of Liste -> not required until firstSyncWithServer?
@@ -310,7 +306,7 @@ function oldSyncWithServer(callback){	// was called by Sync button of Liste -> n
 		password = myLoginParameters['password'];
 	//}); //End getLoginParam
 //syncFirstWithAuth(function(getLoginParam)) {-------------------
-		mySyncURL = 'sqlSyncAdapter4.php';
+		mySyncURL = 'webSqlSyncAdapter.php';
 		unitsTableToSync = [{tableName: 'Unites', idName: 'UniteID'}];
 		DBSYNC.initSync(unitsTableToSync, mywebdb, SYNCDATA.sync_info, mySyncURL, callBackInitSync);	//Parameters are defined in mySyncData.js
 		function callBackInitSync () {
@@ -470,6 +466,8 @@ function showFilteredRecords() {	//Called by updateFiltreParam and syncWithServe
 						'<tr>' 
 	//						+ '<td><a href="#" onclick="loadContact('+i+')" data-role="button" data-icon="arrow-r" data-mini="true" data-inline="true" data-iconpos="notext" data-theme="b" ></a></td>'
 							+ '<td><a href="#" onclick="loadContact(' + i + ')" data-role="button" data-icon="arrow-r">Edit</a></td>'
+							+ '<td>' + item['id'] + '</td>' 
+							+ '<td>' + item['ContactID'] + '</td>' 
 							+ '<td>' + item['firstName'] + '</td>' 
 							+ '<td>' + item['MaJdate'] + '</td>' 
 							+ '<td>' + item['lastName'] + '</td>' 
@@ -477,6 +475,7 @@ function showFilteredRecords() {	//Called by updateFiltreParam and syncWithServe
 							+ '<td>' + item['qte'] + '</td>' 
 							+ '<td>' + item['rbABC'] + '</td>' 
 							+ '<td>' + item['UniteID'] + '</td>' 
+							+ '<td>' + item['last_sync_date'] + '</td>' 
 							+ '<td><a href="#" onclick="removeContact(' + idToDel + ');" data-role="button" data-icon="minus" >Delete</a></td>'
 						+ '</tr>';
 				}
@@ -695,7 +694,8 @@ function hideShow(shown, hidden) {
 // message, percent and msgKey comes from syncNow of webSqlSync.js line 128 and 136
 // Ex: message= "mon message", percent= 20, msgKey= "sendData"  
 function callBackProgress (message, percent, msgKey) {
-     $('#uiProgress').html(message+' ('+percent+'%)');
+	console.log(message+' ('+percent+'%)');
+	$('#uiProgress').html(message+' ('+percent+'%)');
 }
 
 function onError(tx, error) {
