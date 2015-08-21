@@ -1,456 +1,456 @@
 <!DOCTYPE HTML>
 <head>
 	<title>HTML5 WebSQLApp</title>
-<!-- Fonctionnal but the jtsage calendar doesn't work -->
+	<!-- Fonctionnal but the jtsage calendar doesn't work -->
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<!-- ??? to have a json with accent ???  header('content-type: application/json; charset=utf-8');-->
+	<!-- ??? to have a json with accent ???  header('content-type: application/json; charset=utf-8');-->
 
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
-	<link rel="stylesheet" href="media/css/jquery.ui.datepicker.mobile.css" /> 
+	<link rel="stylesheet" href="css/jquery.ui.datepicker.mobile.css" />
 	<link rel="apple-touch-icon-precomposed" href="images/apple-touch-icon-precomposed.png" />
 
-<!-- Bon pour Apple et aussi pour Android à notre grand plaisir -->
-<!-- ToTry: Pour afficher son application en plein écran : 
-	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="apple-touch-fullscreen" content="yes">
-<!-- ToTry: Pour choisir le style de la barre de statut sur iPhone : 
-	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-<!-- ToTry: Pour utiliser une image de chargement : 
-	<link rel="apple-touch-startup-image" href="startup.png" />
--->
+	<!-- Bon pour Apple et aussi pour Android à notre grand plaisir -->
+	<!-- ToTry: Pour afficher son application en plein écran :
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-touch-fullscreen" content="yes">
+    <!-- ToTry: Pour choisir le style de la barre de statut sur iPhone :
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <!-- ToTry: Pour utiliser une image de chargement :
+        <link rel="apple-touch-startup-image" href="startup.png" />
+    -->
 
 	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
 
 	<script src="lib/webSqlSync.js" type="application/x-javascript" charset="utf-8"></script>
 	<script type="text/javascript" src="mySyncData.js"></script>
-<!--	<script type="text/javascript" src="mySyncScript.js"></script>	-->
+	<!--	<script type="text/javascript" src="mySyncScript.js"></script>	-->
 
-<!--	<script src="lib/jQuery.ui.datepicker.js"></script>
-	<script src="lib/jquery.ui.datepicker.mobile.js"></script>	-->
+	<!--	<script src="lib/jQuery.ui.datepicker.js"></script>
+        <script src="lib/jquery.ui.datepicker.mobile.js"></script>	-->
 
-	<link rel="stylesheet" href="media/themes/Redtheme.min.css" />
-	<style type="text/css"> @import "media/css/table.css"; </style>
+	<link rel="stylesheet" href="media/themes/Redtheme.css" />
+	<style type="text/css"> @import "css/table.css"; </style>
 
-</head>   
-<body>    
+</head>
+<body>
 <!--   <form  name="myForm" > -->
-	<div id="Liste">
-        <div data-role="header" >
-        	<a href="#" onclick="return hideShow('Ajout','Liste');" data-role="button" data-icon="plus" data-iconpos="notext" data-mini="true" data-inline="true" data-theme="a"></a>
-				<h1>Liste des activit&eacute;s</h1>
-			<a href="#" onclick="loadFiltreParam();" data-role="button" data-icon="search" data-iconpos="notext" data-mini="true" data-inline="true" data-theme="a"></a>
-        </div>
-		<table id="datatables" class="display">
-        	<thead>
-            	<tr class="odd">
-					<th>Edit</th>
-					<th>id</th>
-					<th>ContactID</th>
-                    <th>FirstName</th>
-                    <th>Date de r&eacute;alisation</th>
-                    <th>LastName</th>
-                    <th>CheckBox</th>
-                    <th>Qty (0.00)</th>
-					<th>RadioButton ABC</th>
-                    <th>UnitID</th>
-                    <th>last_sync_date</th>
-	                <th>Delete</th>	
-				</tr>
-			</thead>
-			<tbody id="listeItem"> </tbody>	
-<!--			<table id="listeItem"> </table> -->
-        </table>
-		<div id="uiProgress"> uiProgress: </div>
-        <div data-role="footer" >
-			<a href="#" onclick="loadLoginParam();" data-role="button" data-icon="gear" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">Paramètres</a>
-			<a href="#" onclick="NEXTsyncWithServer();" data-role="button" data-icon="gear" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">Sync</a>
-        	<a href="#" onclick="dropTables();" data-role="button" data-icon="delete" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">Drop tables</a>
-        </div>
+<div id="Liste">
+	<div data-role="header" >
+		<a href="#" onclick="return hideShow('Ajout','Liste');" data-role="button" data-icon="plus" data-iconpos="notext" data-mini="true" data-inline="true" data-theme="a"></a>
+		<h1>Liste des activit&eacute;s</h1>
+		<a href="#" onclick="loadFiltreParam();" data-role="button" data-icon="search" data-iconpos="notext" data-mini="true" data-inline="true" data-theme="a"></a>
 	</div>
-
-	<div id="Ajout" style="display:none">
-		<div data-role="header">
-			<a href="#" onclick="return hideShow('Liste','Ajout');" data-role="button" data-icon="home" data-inline="true" data-iconpos="notext" data-theme="a" ></a>
-			<h1>Activité - Ajout </h1>
-		</div><!-- /header -->
-		<div data-role="content">
-     		<input type="hidden" id="idAdd"/>
-     		First name:<input type="text" name="firstNameAdd" id="firstNameAdd"/>
-     		Last name:<input type="text" name="lastNameAdd" id="lastNameAdd"/>
-     		Quantité: <input type="text" name="qteAdd" id="qteAdd"/> 
-			Unité:  <select name="uniteIdAdd" id="uniteSelectAdd" value=""> </select>
-
-			<label for="MaJdateAdd">Date:</label>
-<!--   		<input type="date" name="MaJdate" id="MaJdate" data-role="datebox" data-options='{"mode":"calbox", "calStartDay": 1, "highDays": [6,5]}' value="" />	-->
-<!--		<input type="text" name="MaJdateAdd" id="MaJdateAdd" data-role="datebox" >	 data-options="{"mode":"calbox"}" class="ui-input-text ui-body-d ui-corner-all ui-icon-datebox" 	-->
-			<input type="date" name="MaJdateAdd" id="MaJdateAdd" value="" >	<!-- data-options="{"mode":"calbox"}" class="ui-input-text ui-body-d ui-corner-all ui-icon-datebox" 	-->
-
-			<label><input type="checkbox" name="cbFaitAdd" id="cbFaitAdd" value="" /> Fait </label>
- 
-			<fieldset data-role="controlgroup" data-type="horizontal"> <!-- "vertical" -->
-				<legend>Radio ABC:</legend>
-					<input type="radio" name="rbABCAdd" id="rbABCAdd1" value="A" />	<!-- checked="checked"  -->
-					<label for="rbABCAdd1">A</label>
-					<input type="radio" name="rbABCAdd" id="rbABCAdd2" value="B"  />
-					<label for="rbABCAdd2">B</label>
-					<input type="radio" name="rbABCAdd" id="rbABCAdd3" value="C"  />
-					<label for="rbABCAdd3">C</label>
-			</fieldset>
-		</div><!-- /content -->
-        <div data-role="footer" >
-        	<a href="#" onClick="insertContact();" data-role="button" data-icon="plus" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">Ajouter</a>
-			<a href="#" onClick="resetForm();" data-role="button" data-icon="minus" data-iconpos="right" data-mini="true" data-inline="true" data-theme="a">Reset Form</a>
-        </div>
+	<table id="datatables" class="display">
+		<thead>
+		<tr class="odd">
+			<th>Edit</th>
+			<th>id</th>
+			<th>ContactID</th>
+			<th>FirstName</th>
+			<th>Date de r&eacute;alisation</th>
+			<th>LastName</th>
+			<th>CheckBox</th>
+			<th>Qty (0.00)</th>
+			<th>RadioButton ABC</th>
+			<th>UnitID</th>
+			<th>last_sync_date</th>
+			<th>Delete</th>
+		</tr>
+		</thead>
+		<tbody id="listeItem"> </tbody>
+		<!--			<table id="listeItem"> </table> -->
+	</table>
+	<div id="uiProgress"> uiProgress: </div>
+	<div data-role="footer" >
+		<a href="#" onclick="loadLoginParam();" data-role="button" data-icon="gear" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">Paramètres</a>
+		<a href="#" onclick="NEXTsyncWithServer();" data-role="button" data-icon="gear" data-iconpos="left" data-mini="true" data-inline="true" data-theme="a">Sync</a>
+		<a href="#" onclick="dropTables();" data-role="button" data-icon="delete" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">Drop tables</a>
 	</div>
+</div>
 
-	<div id="Edit" style="display:none">
-		<div data-role="header">
-			<a href="#" onclick="return hideShow('Liste','Edit');" data-role="button" data-icon="home" data-inline="true" data-iconpos="notext" data-theme="a"></a>
-			<h1>Activité - Edit </h1>
-		</div><!-- /header -->
-		<div data-role="content">
-     		<input type="hidden" id="idEdit"/>
-     		First name:<input type="text" name="firstNameEdit" id="firstNameEdit"/>
-     		Last name:<input type="text" name="lastNameEdit" id="lastNameEdit"/>
-     		Quantité: <input type="text" name="qteEdit" id="qteEdit"/>
-			Unité:  <select name="uniteIdEdit" id="uniteSelectEdit" > </select>
-     		Date: <input type="date" name="MaJdateEdit" id="MaJdateEdit"/>
-<!--			Fait: <input type="checkbox" name="cbFaitEdit" id="cbFaitEdit" checked="" value="">Cochez si réalisé	-->
-			<label><input type="checkbox" name="cbFaitEdit" id="cbFaitEdit" checked="" value="" /> Fait </label>
+<div id="Ajout" style="display:none">
+	<div data-role="header">
+		<a href="#" onclick="return hideShow('Liste','Ajout');" data-role="button" data-icon="home" data-inline="true" data-iconpos="notext" data-theme="a" ></a>
+		<h1>Activité - Ajout </h1>
+	</div><!-- /header -->
+	<div data-role="content">
+		<input type="hidden" id="idAdd"/>
+		First name:<input type="text" name="firstNameAdd" id="firstNameAdd"/>
+		Last name:<input type="text" name="lastNameAdd" id="lastNameAdd"/>
+		Quantité: <input type="text" name="qteAdd" id="qteAdd"/>
+		Unité:  <select name="uniteIdAdd" id="uniteSelectAdd" value=""> </select>
 
-			<fieldset data-role="controlgroup" data-type="vertical">
-				<legend>Radio ABC:</legend>
-					<input type="radio" name="rbABCEdit" id="rbABCEdit1" value="A" />
-					<label for="rbABCEdit1">A</label>
-					<input type="radio" name="rbABCEdit" id="rbABCEdit2" value="B" />
-					<label for="rbABCEdit2">B</label>
-					<input type="radio" name="rbABCEdit" id="rbABCEdit3" value="C" />
-					<label for="rbABCEdit3">C</label>
-			</fieldset>
+		<label for="MaJdateAdd">Date:</label>
+		<!--   		<input type="date" name="MaJdate" id="MaJdate" data-role="datebox" data-options='{"mode":"calbox", "calStartDay": 1, "highDays": [6,5]}' value="" />	-->
+		<!--		<input type="text" name="MaJdateAdd" id="MaJdateAdd" data-role="datebox" >	 data-options="{"mode":"calbox"}" class="ui-input-text ui-body-d ui-corner-all ui-icon-datebox" 	-->
+		<input type="date" name="MaJdateAdd" id="MaJdateAdd" value="" >	<!-- data-options="{"mode":"calbox"}" class="ui-input-text ui-body-d ui-corner-all ui-icon-datebox" 	-->
 
-			<div data-role="footer" >
-				<a href="#" onClick="updateContact();" data-role="button" data-icon="plus" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">Modifier</a>
-			</div>
+		<label><input type="checkbox" name="cbFaitAdd" id="cbFaitAdd" value="" /> Fait </label>
+
+		<fieldset data-role="controlgroup" data-type="horizontal"> <!-- "vertical" -->
+			<legend>Radio ABC:</legend>
+			<input type="radio" name="rbABCAdd" id="rbABCAdd1" value="A" />	<!-- checked="checked"  -->
+			<label for="rbABCAdd1">A</label>
+			<input type="radio" name="rbABCAdd" id="rbABCAdd2" value="B"  />
+			<label for="rbABCAdd2">B</label>
+			<input type="radio" name="rbABCAdd" id="rbABCAdd3" value="C"  />
+			<label for="rbABCAdd3">C</label>
+		</fieldset>
+	</div><!-- /content -->
+	<div data-role="footer" >
+		<a href="#" onClick="insertContact();" data-role="button" data-icon="plus" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">Ajouter</a>
+		<a href="#" onClick="resetForm();" data-role="button" data-icon="minus" data-iconpos="right" data-mini="true" data-inline="true" data-theme="a">Reset Form</a>
+	</div>
+</div>
+
+<div id="Edit" style="display:none">
+	<div data-role="header">
+		<a href="#" onclick="return hideShow('Liste','Edit');" data-role="button" data-icon="home" data-inline="true" data-iconpos="notext" data-theme="a"></a>
+		<h1>Activité - Edit </h1>
+	</div><!-- /header -->
+	<div data-role="content">
+		<input type="hidden" id="idEdit"/>
+		First name:<input type="text" name="firstNameEdit" id="firstNameEdit"/>
+		Last name:<input type="text" name="lastNameEdit" id="lastNameEdit"/>
+		Quantité: <input type="text" name="qteEdit" id="qteEdit"/>
+		Unité:  <select name="uniteIdEdit" id="uniteSelectEdit" > </select>
+		Date: <input type="date" name="MaJdateEdit" id="MaJdateEdit"/>
+		<!--			Fait: <input type="checkbox" name="cbFaitEdit" id="cbFaitEdit" checked="" value="">Cochez si réalisé	-->
+		<label><input type="checkbox" name="cbFaitEdit" id="cbFaitEdit" checked="" value="" /> Fait </label>
+
+		<fieldset data-role="controlgroup" data-type="vertical">
+			<legend>Radio ABC:</legend>
+			<input type="radio" name="rbABCEdit" id="rbABCEdit1" value="A" />
+			<label for="rbABCEdit1">A</label>
+			<input type="radio" name="rbABCEdit" id="rbABCEdit2" value="B" />
+			<label for="rbABCEdit2">B</label>
+			<input type="radio" name="rbABCEdit" id="rbABCEdit3" value="C" />
+			<label for="rbABCEdit3">C</label>
+		</fieldset>
+
+		<div data-role="footer" >
+			<a href="#" onClick="updateContact();" data-role="button" data-icon="plus" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">Modifier</a>
 		</div>
 	</div>
+</div>
 
-	<div id="Filtre" style="display:none">
-		<div data-role="header">
-			<a href="#" onclick="return hideShow('Liste','Filtre');" data-role="button" data-icon="home" data-inline="true" data-iconpos="notext" data-theme="a" ></a>
-			<h1>Activité - Filtre </h1>
-		</div><!-- /header -->
-		<div data-role="content">
-     		First name:<input type="text" name="firstNameFiltre" id="firstNameFiltre"/>
-     		Last name:<input type="text" name="lastNameFiltre" id="lastNameFiltre"/>
-     		Quantité: <input type="text" name="qteFiltre" id="qteFiltre"/>
-			Unité:  <select name="uniteIdFiltre" id="uniteSelectFiltre" > </select>
-			<label for="MaJdateFiltre">Date:</label>
-     		<input type="date" name="MaJdateFiltre" id="MaJdateFiltre" value"" />
-			<label><input type="checkbox" name="cbFaitFiltre" id="cbFaitFiltre" value="" /> Fait </label>
+<div id="Filtre" style="display:none">
+	<div data-role="header">
+		<a href="#" onclick="return hideShow('Liste','Filtre');" data-role="button" data-icon="home" data-inline="true" data-iconpos="notext" data-theme="a" ></a>
+		<h1>Activité - Filtre </h1>
+	</div><!-- /header -->
+	<div data-role="content">
+		First name:<input type="text" name="firstNameFiltre" id="firstNameFiltre"/>
+		Last name:<input type="text" name="lastNameFiltre" id="lastNameFiltre"/>
+		Quantité: <input type="text" name="qteFiltre" id="qteFiltre"/>
+		Unité:  <select name="uniteIdFiltre" id="uniteSelectFiltre" > </select>
+		<label for="MaJdateFiltre">Date:</label>
+		<input type="date" name="MaJdateFiltre" id="MaJdateFiltre" value"" />
+		<label><input type="checkbox" name="cbFaitFiltre" id="cbFaitFiltre" value="" /> Fait </label>
 
-			<fieldset data-role="controlgroup" data-type="horizontal">
-				<legend>Radio ABC:</legend>
-					<input type="radio" name="rbABCFiltre" id="rbABCFiltre0" value="" />
-					<label for="rbABCFiltre0">None</label>
-			
-					<input type="radio" name="rbABCFiltre" id="rbABCFiltre1" value="A" />
-					<label for="rbABCFiltre1">A</label>
-			
-					<input type="radio" name="rbABCFiltre" id="rbABCFiltre2" value="B" />
-					<label for="rbABCFiltre2">B</label>
-			
-					<input type="radio" name="rbABCFiltre" id="rbABCFiltre3" value="C" />
-					<label for="rbABCFiltre3">C</label>
-			</fieldset>
-			<div data-role="footer" >
-				<a href="#" onClick="updateFiltreParam();" data-role="button" data-icon="plus" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">Filtrer</a>
-			</div>
+		<fieldset data-role="controlgroup" data-type="horizontal">
+			<legend>Radio ABC:</legend>
+			<input type="radio" name="rbABCFiltre" id="rbABCFiltre0" value="" />
+			<label for="rbABCFiltre0">None</label>
+
+			<input type="radio" name="rbABCFiltre" id="rbABCFiltre1" value="A" />
+			<label for="rbABCFiltre1">A</label>
+
+			<input type="radio" name="rbABCFiltre" id="rbABCFiltre2" value="B" />
+			<label for="rbABCFiltre2">B</label>
+
+			<input type="radio" name="rbABCFiltre" id="rbABCFiltre3" value="C" />
+			<label for="rbABCFiltre3">C</label>
+		</fieldset>
+		<div data-role="footer" >
+			<a href="#" onClick="updateFiltreParam();" data-role="button" data-icon="plus" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">Filtrer</a>
 		</div>
 	</div>
+</div>
 
-	<div id="LoginParamEdit" style="display:none">
-		<div data-role="header">
-			<a href="#" onclick="return hideShow('Liste','LoginParamEdit');" data-role="button" data-icon="home" data-inline="true" data-iconpos="notext" data-theme="a"></a>
-			<h1>Login - Parameters </h1>
-		</div><!-- /header -->
-		<div data-role="header">
-			<p>Modify your connexion parameters to the server</p>
-		</div><!-- /header -->
-		<div data-role="content">
-     		<input type="hidden" id="idUser"/>
-     		User ID : <input type="text" name="userIdEdit" id="userIdEdit"/>
-     		Password: <input type="password" name="userPasswordEdit" id="userPasswordEdit"/>
-     		Email   : <input type="email" name="userEmailEdit" id="userEmailEdit"/>
+<div id="LoginParamEdit" style="display:none">
+	<div data-role="header">
+		<a href="#" onclick="return hideShow('Liste','LoginParamEdit');" data-role="button" data-icon="home" data-inline="true" data-iconpos="notext" data-theme="a"></a>
+		<h1>Login - Parameters </h1>
+	</div><!-- /header -->
+	<div data-role="header">
+		<p>Modify your connexion parameters to the server</p>
+	</div><!-- /header -->
+	<div data-role="content">
+		<input type="hidden" id="idUser"/>
+		User ID : <input type="text" name="userIdEdit" id="userIdEdit"/>
+		Password: <input type="password" name="userPasswordEdit" id="userPasswordEdit"/>
+		Email   : <input type="email" name="userEmailEdit" id="userEmailEdit"/>
 
-			<div data-role="footer" >
-				<a href="#" onClick="updateLoginParam();" data-role="button" data-icon="plus" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">Save&Sync</a>
-			</div>
+		<div data-role="footer" >
+			<a href="#" onClick="updateLoginParam();" data-role="button" data-icon="plus" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">Save&Sync</a>
 		</div>
 	</div>
+</div>
 <!--   </form> -->
 
-  </body>
-  
+</body>
+
 <script>
-var liste = document.getElementById('liste'); 
-var idAdd = document.getElementById('idAdd');
-var firstNameAdd = document.getElementById('firstNameAdd');  
-var lastNameAdd = document.getElementById('lastNameAdd');  
-var qteAdd = document.getElementById('qteAdd'); 
+	var liste = document.getElementById('liste');
+	var idAdd = document.getElementById('idAdd');
+	var firstNameAdd = document.getElementById('firstNameAdd');
+	var lastNameAdd = document.getElementById('lastNameAdd');
+	var qteAdd = document.getElementById('qteAdd');
 
-var currentDate = new Date(); // pour que l'objet MaJdate soit de type date pour JS
-var currentDateISO = currentDate.toISOString().substring(0, 10); // converts a Date object into a string, using the ISO-8601 and the format is: YYYY-MM-DDTHH:mm:ss.sssZ
-document.getElementById("MaJdateAdd").value=currentDateISO; // populate le HTML5 INPUT date de Ajout avec la date d'aujourd'hui
+	var currentDate = new Date(); // pour que l'objet MaJdate soit de type date pour JS
+	var currentDateISO = currentDate.toISOString().substring(0, 10); // converts a Date object into a string, using the ISO-8601 and the format is: YYYY-MM-DDTHH:mm:ss.sssZ
+	document.getElementById("MaJdateAdd").value=currentDateISO; // populate le HTML5 INPUT date de Ajout avec la date d'aujourd'hui
 
-var MaJdateEdit = new Date(); // pour que l'objet MaJdateEdit soit de type date pour JS
-var MaJdateFiltre = new Date(); // pour que l'objet MaJdateFiltre soit de type date pour JS
-var MaJdateFiltreNew = "";
-var cbFaitAdd = document.getElementById("cbFaitAdd").checked=false; // 
-var	cbFaitEdit = ""; 
-var	cbFaitFiltre = ""; 
-var rbABCAdd = new Array();  
-var rbABCEdit = new Array();  //utile?
-//var rbABCEditSel = new Array();  //Alone
-var rbABCFiltre = new Array();  
-var uniteIdAdd = document.getElementById('uniteSelectAdd'); // Déclare unitIdAdd servant à obtenir l'option sélectionnée du select 
-var uniteIdEdit = document.getElementById('uniteSelectEdit'); // 
-var uniteIdFiltre = document.getElementById('uniteSelectFiltre'); // 
-var sqlSelectFilteredContacts = "";
-var dataset;
-var syncSuccess = false;	//to define the syncSuccess for line 288
-   
-//var sqlSelectAllContacts = "SELECT * FROM Contacts";
-//var sqlSelectFiltreParam = "SELECT * FROM FiltreParam"; //not used
-//var sqlSelectAllUnites = "SELECT * FROM Unites";	//not used
-//var sqlUpdateFiltreParam = "UPDATE FiltreParam SET firstNameFP = ?, lastNameFP = ?, qteFP = ?, MaJdateFP = ?, cbFaitFP = ?, rbABCFP = ?, uniteIdFP = ? WHERE id = 1";
-//var sqlUpdateUserParam = "UPDATE UserParam SET userId = ?, password = ?, email = ? WHERE id = 1";
+	var MaJdateEdit = new Date(); // pour que l'objet MaJdateEdit soit de type date pour JS
+	var MaJdateFiltre = new Date(); // pour que l'objet MaJdateFiltre soit de type date pour JS
+	var MaJdateFiltreNew = "";
+	var cbFaitAdd = document.getElementById("cbFaitAdd").checked=false; //
+	var	cbFaitEdit = "";
+	var	cbFaitFiltre = "";
+	var rbABCAdd = new Array();
+	var rbABCEdit = new Array();  //utile?
+	//var rbABCEditSel = new Array();  //Alone
+	var rbABCFiltre = new Array();
+	var uniteIdAdd = document.getElementById('uniteSelectAdd'); // Déclare unitIdAdd servant à obtenir l'option sélectionnée du select
+	var uniteIdEdit = document.getElementById('uniteSelectEdit'); //
+	var uniteIdFiltre = document.getElementById('uniteSelectFiltre'); //
+	var sqlSelectFilteredContacts = "";
+	var dataset;
+	var syncSuccess = false;	//to define the syncSuccess for line 288
 
-var mywebdb = openDatabase("AddressBook", "1.0", "Address Book", 2 * 1024 * 1024);
-createTable();	// To create all tables for the web app and run initSync of webSyncSql.js to add the tables required for sync 
-hideShow('LoginParamEdit','Liste'); // Go to LoginParamEdit to enter ID & PW, then syncWithServer
+	//var sqlSelectAllContacts = "SELECT * FROM Contacts";
+	//var sqlSelectFiltreParam = "SELECT * FROM FiltreParam"; //not used
+	//var sqlSelectAllUnites = "SELECT * FROM Unites";	//not used
+	//var sqlUpdateFiltreParam = "UPDATE FiltreParam SET firstNameFP = ?, lastNameFP = ?, qteFP = ?, MaJdateFP = ?, cbFaitFP = ?, rbABCFP = ?, uniteIdFP = ? WHERE id = 1";
+	//var sqlUpdateUserParam = "UPDATE UserParam SET userId = ?, password = ?, email = ? WHERE id = 1";
 
-//---- FUNCTIONS ----
-function createTable() { 
-	mywebdb.transaction(function(tx) {
-		tx.executeSql("CREATE TABLE IF NOT EXISTS Contacts (id INTEGER PRIMARY KEY AUTOINCREMENT, ContactID INTEGER, firstName TEXT, lastName TEXT, qte TEXT, MaJdate TEXT, cbFait TEXT, rbABC TEXT, UniteID INTEGER, last_sync_date TEXT)", []); // Create Contacts table
-		//tx.executeSql("INSERT INTO Contacts (ContactID, firstName, lastName, qte, MaJdate, cbFait, rbABC, uniteId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", ['1', 'Alain', 'Alarie', '1', '2013-01-01', '1', 'A', '1']);
-		//tx.executeSql("INSERT INTO Contacts (ContactID, firstName, lastName, qte, MaJdate, cbFait, rbABC, uniteId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", ['8', 'Benoît', 'Beaudet', '2', '2013-01-02', '2', 'B', '1']);
-		//tx.executeSql("INSERT INTO Contacts (ContactID, firstName, lastName, qte, MaJdate, cbFait, rbABC, uniteId) VALUES ('8', 'Benoît', 'Beaudet', '2', '2013-01-02', '2', 'B', '1');	");	//On ne peut pas en insérer 2 de suite. Why?
+	var mywebdb = openDatabase("AddressBook", "1.0", "Address Book", 2 * 1024 * 1024);
+	createTable();	// To create all tables for the web app and run initSync of webSyncSql.js to add the tables required for sync
+	hideShow('LoginParamEdit','Liste'); // Go to LoginParamEdit to enter ID & PW, then syncWithServer
 
-		tx.executeSql("CREATE TABLE IF NOT EXISTS Unites (UniteID INTEGER PRIMARY KEY, UniteSymbol TEXT, last_sync_date TEXT)");	// AUTOINCREMENT removed to have an id not starting with 1
-		tx.executeSql("INSERT INTO Unites(UniteID, UniteSymbol) VALUES(?, ?)", [-1,'C$']); // It insert a row with an ID of -1 to have the next id to 0 like MySQL
+	//---- FUNCTIONS ----
+	function createTable() {
+		mywebdb.transaction(function(tx) {
+			tx.executeSql("CREATE TABLE IF NOT EXISTS Contacts (id INTEGER PRIMARY KEY AUTOINCREMENT, ContactID INTEGER, firstName TEXT, lastName TEXT, qte TEXT, MaJdate TEXT, cbFait TEXT, rbABC TEXT, UniteID INTEGER, last_sync_date TEXT)", []); // Create Contacts table
+			//tx.executeSql("INSERT INTO Contacts (ContactID, firstName, lastName, qte, MaJdate, cbFait, rbABC, uniteId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", ['1', 'Alain', 'Alarie', '1', '2013-01-01', '1', 'A', '1']);
+			//tx.executeSql("INSERT INTO Contacts (ContactID, firstName, lastName, qte, MaJdate, cbFait, rbABC, uniteId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", ['8', 'Benoît', 'Beaudet', '2', '2013-01-02', '2', 'B', '1']);
+			//tx.executeSql("INSERT INTO Contacts (ContactID, firstName, lastName, qte, MaJdate, cbFait, rbABC, uniteId) VALUES ('8', 'Benoît', 'Beaudet', '2', '2013-01-02', '2', 'B', '1');	");	//On ne peut pas en insérer 2 de suite. Why?
 
-		tx.executeSql("CREATE TABLE IF NOT EXISTS FiltreParam (id INTEGER PRIMARY KEY AUTOINCREMENT, firstNameFP TEXT, lastNameFP TEXT, qteFP TEXT, MaJdateFP TEXT, cbFaitFP TEXT, rbABCFP TEXT, uniteIdFP INTEGER)", []); // Create FiltreParam to record the parameters to filter the contacts
-		tx.executeSql("INSERT INTO FiltreParam (firstNameFP, lastNameFP, qteFP, MaJdateFP, cbFaitFP, rbABCFP, uniteIdFP) VALUES (?, ?, ?, ?, ?, ?, ?);", ['', '', '', '1901-01-01', '', '', '']);	//1901-01-01 is the NULL date in SQLite
+			tx.executeSql("CREATE TABLE IF NOT EXISTS Unites (UniteID INTEGER PRIMARY KEY, UniteSymbol TEXT, last_sync_date TEXT)");	// AUTOINCREMENT removed to have an id not starting with 1
+			tx.executeSql("INSERT INTO Unites(UniteID, UniteSymbol) VALUES(?, ?)", [-1,'C$']); // It insert a row with an ID of -1 to have the next id to 0 like MySQL
 
-		tx.executeSql("CREATE TABLE IF NOT EXISTS UserParam (id INTEGER PRIMARY KEY AUTOINCREMENT, userId TEXT, password TEXT, email TEXT)", []); // Create UserParam to record the connection parameters to the Php-MySQL server
-		tx.executeSql("INSERT INTO UserParam (userId, password, email) VALUES (?, ?, ?);", ['', '', '']);
+			tx.executeSql("CREATE TABLE IF NOT EXISTS FiltreParam (id INTEGER PRIMARY KEY AUTOINCREMENT, firstNameFP TEXT, lastNameFP TEXT, qteFP TEXT, MaJdateFP TEXT, cbFaitFP TEXT, rbABCFP TEXT, uniteIdFP INTEGER)", []); // Create FiltreParam to record the parameters to filter the contacts
+			tx.executeSql("INSERT INTO FiltreParam (firstNameFP, lastNameFP, qteFP, MaJdateFP, cbFaitFP, rbABCFP, uniteIdFP) VALUES (?, ?, ?, ?, ?, ?, ?);", ['', '', '', '1901-01-01', '', '', '']);	//1901-01-01 is the NULL date in SQLite
 
-	});
-	tableToSync = [
-        {tableName: 'Contacts', idName: 'id'},
-        {tableName: 'Unites', idName: 'UniteID'}
-    ];
-	mySyncURL = 'webSqlSyncAdapter.php';
-	DBSYNC.initSync(tableToSync, mywebdb, SYNCDATA.sync_info, mySyncURL, callBackInitSync);	//Parameters are defined in mySyncData.js
-	function callBackInitSync () {
-		 $('#uiProgress').html("InitSync Done");
-	}
-}
+			tx.executeSql("CREATE TABLE IF NOT EXISTS UserParam (id INTEGER PRIMARY KEY AUTOINCREMENT, userId TEXT, password TEXT, email TEXT)", []); // Create UserParam to record the connection parameters to the Php-MySQL server
+			tx.executeSql("INSERT INTO UserParam (userId, password, email) VALUES (?, ?, ?);", ['', '', '']);
 
-function NEXTsyncWithServer() {	//called by list button SYNC
-	syncWithServer(function(syncSuccess){		// callback is used to wait the server query result.  The data is received from the server when syncSuccess is true.
-	});
-}
-
-// begin FUNCTIONS related to DownloadUnits -> to transform for a 2 way sync
-// to do: Function to sync with Activite MySQL table 
-// to add: Get data from other MySQL table 
-// to add: sync data from other MySQL table if there is a change (unites, categories, mandats, client, ...)
-//// Called like this: syncWithServer(function(syncSuccess){		// callback is used to wait the server query result.  The data is received from the server when syncSuccess is true.
-function syncWithServer(callback){	// First sync: It downloads server data (contacts, units, categories, etc.) 
-	//myAuthURL = '';
-	mySyncURL = 'webSqlSyncAdapter.php';
-	username = "";
-	password = "";
-	// Take ID & PW from LoginParamEdit form
-	var username = document.getElementById("userIdEdit").value; 
-	var password = document.getElementById("userPasswordEdit").value; 
-	console.log("319 ID:" + username + " PW:" + password);
-	saveBandwidth = true; //optional 3e argument de syncNow dans la version 130808 de webSqlSync
-	//Essai pour passer ID = myLoginParameters['userId'] et PW = myLoginParameters['password'] à la requête ajax POST avec username et password param
-	DBSYNC.syncNow(callBackProgress, function(result) {
-	//DBSYNC.syncNow(callBackProgress, username, password, function(result) { // to do: try to pass it in the json
-		syncSuccess = true;	//response sent as a callback by syncNow if the sync is a success
-		callback(syncSuccess);
-		if (result.syncOK === true) {
-			syncSuccess = true;
-		}
-		else {
-			alert("first SyncNow failed, line 296 of index.html"); //Synchronized error
-		}
-		showFilteredRecords();
-//	}); // End syncNow
-	},saveBandwidth); // End syncNow
-}
-/*
-function oldSyncWithServer(callback){	// was called by Sync button of Liste -> not required until firstSyncWithServer?
-	username = "";
-	password = "";
-	getLoginParam(function(myLoginParameters) {	
-		username = myLoginParameters['userId'];
-		console.log("337 ID:" + username + "PW:" + password);
-		password = myLoginParameters['password'];
-	//}); //End getLoginParam
-//syncFirstWithAuth(function(getLoginParam)) {-------------------
+		});
+		tableToSync = [
+			{tableName: 'Contacts', idName: 'id'},
+			{tableName: 'Unites', idName: 'UniteID'}
+		];
 		mySyncURL = 'webSqlSyncAdapter.php';
-		unitsTableToSync = [{tableName: 'Unites', idName: 'UniteID'}];
-		DBSYNC.initSync(unitsTableToSync, mywebdb, SYNCDATA.sync_info, mySyncURL, callBackInitSync);	//Parameters are defined in mySyncData.js
+		DBSYNC.initSync(tableToSync, mywebdb, SYNCDATA.sync_info, mySyncURL, callBackInitSync);	//Parameters are defined in mySyncData.js
 		function callBackInitSync () {
-			 $('#uiProgress').html("InitSync Done");
+			$('#uiProgress').html("InitSync Done");
 		}
-	}); //End getLoginParam
-	console.log("346 ID:" + username + " PW:" + password);
-	DBSYNC.syncNow(callBackProgress, username, password, function(result) {	//ça sync bien que loginCheck n'ait pas de $_POST (bypassé)
-		syncSuccess = true;	//response sent as a callback by syncNow if the sync is a success
-		callback(syncSuccess);
-		if (result.syncOK === true) {
-			syncSuccess = true;
+	}
+
+	function NEXTsyncWithServer() {	//called by list button SYNC
+		syncWithServer(function(syncSuccess){		// callback is used to wait the server query result.  The data is received from the server when syncSuccess is true.
+		});
+	}
+
+	// begin FUNCTIONS related to DownloadUnits -> to transform for a 2 way sync
+	// to do: Function to sync with Activite MySQL table
+	// to add: Get data from other MySQL table
+	// to add: sync data from other MySQL table if there is a change (unites, categories, mandats, client, ...)
+	//// Called like this: syncWithServer(function(syncSuccess){		// callback is used to wait the server query result.  The data is received from the server when syncSuccess is true.
+	function syncWithServer(callback){	// First sync: It downloads server data (contacts, units, categories, etc.)
+		//myAuthURL = '';
+		mySyncURL = 'webSqlSyncAdapter.php';
+		username = "";
+		password = "";
+		// Take ID & PW from LoginParamEdit form
+		var username = document.getElementById("userIdEdit").value;
+		var password = document.getElementById("userPasswordEdit").value;
+		console.log("319 ID:" + username + " PW:" + password);
+		saveBandwidth = true; //optional 3e argument de syncNow dans la version 130808 de webSqlSync
+		//Essai pour passer ID = myLoginParameters['userId'] et PW = myLoginParameters['password'] à la requête ajax POST avec username et password param
+		DBSYNC.syncNow(callBackProgress, function(result) {
+			//DBSYNC.syncNow(callBackProgress, username, password, function(result) { // to do: try to pass it in the json
+			syncSuccess = true;	//response sent as a callback by syncNow if the sync is a success
+			callback(syncSuccess);
+			if (result.syncOK === true) {
+				syncSuccess = true;
+			}
+			else {
+				alert("first SyncNow failed, line 296 of index.html"); //Synchronized error
+			}
+			showFilteredRecords();
+//	}); // End syncNow
+		},saveBandwidth); // End syncNow
+	}
+	/*
+	 function oldSyncWithServer(callback){	// was called by Sync button of Liste -> not required until firstSyncWithServer?
+	 username = "";
+	 password = "";
+	 getLoginParam(function(myLoginParameters) {
+	 username = myLoginParameters['userId'];
+	 console.log("337 ID:" + username + "PW:" + password);
+	 password = myLoginParameters['password'];
+	 //}); //End getLoginParam
+	 //syncFirstWithAuth(function(getLoginParam)) {-------------------
+	 mySyncURL = 'webSqlSyncAdapter.php';
+	 unitsTableToSync = [{tableName: 'Unites', idName: 'UniteID'}];
+	 DBSYNC.initSync(unitsTableToSync, mywebdb, SYNCDATA.sync_info, mySyncURL, callBackInitSync);	//Parameters are defined in mySyncData.js
+	 function callBackInitSync () {
+	 $('#uiProgress').html("InitSync Done");
+	 }
+	 }); //End getLoginParam
+	 console.log("346 ID:" + username + " PW:" + password);
+	 DBSYNC.syncNow(callBackProgress, username, password, function(result) {	//ça sync bien que loginCheck n'ait pas de $_POST (bypassé)
+	 syncSuccess = true;	//response sent as a callback by syncNow if the sync is a success
+	 callback(syncSuccess);
+	 if (result.syncOK === true) {
+	 syncSuccess = true;
+	 }
+	 else {
+	 alert("first SyncNow failed, line 333 of index.html"); //Synchronized error
+	 }
+	 }); // to close the syncNow
+	 //-------------------
+	 }
+	 */
+
+
+	//Populate all units selectbox with units from webDB, use a callback to force waiting for the webDB result
+	function loadUnitesSelect(callback) {
+		mywebdb.transaction(function (tx) {
+			tx.executeSql('SELECT * FROM Unites', [], function(tx, results) {
+				unitsArray = [];
+				var dataset = results.rows;
+				//console.log("length:" + dataset.length);	//R:
+				for(var i=0;i<dataset.length;i++){
+					var element=new Object();
+					element.UniteID=dataset.item(i).UniteID;
+					element.UniteSymbol=dataset.item(i).UniteSymbol;
+					unitsArray[i]=element;
+				}
+				//console.log(unitsArray);
+				callback(unitsArray);
+			}); // for tx.executeSql
+		});	//for mywebdb.transaction
+	}
+	// end FUNCTIONS related to DownloadUnits
+
+	function getRadioVal(radioName) {
+		var rads = document.getElementsByName(radioName);
+		for(var rad in rads) {
+			if(rads[rad].checked)
+				return rads[rad].value;
 		}
-		else {
-			alert("first SyncNow failed, line 333 of index.html"); //Synchronized error
-		}
-	}); // to close the syncNow
-//-------------------
-}
-*/
+		return null;
+	}
 
+	// begin FUNCTIONS related to SHOW FILTERED CONTACTS
+	function loadFiltreParam() {
+		mywebdb.transaction(function (tx) {
+			tx.executeSql('SELECT * FROM FiltreParam WHERE id=?', [1], function (tx, FPresult) {
+				//tx.executeSql('SELECT TOP 1 FROM FiltreParam', [], function (tx, FPresult) {
+				var lenFParam = FPresult.rows.length;
+				FPdataset = FPresult.rows;
+				FPitem = FPdataset.item(0);
+				firstNameFiltre.value = FPitem['firstNameFP'];
+				lastNameFiltre.value = FPitem['lastNameFP'];
+				qteFiltre.value = FPitem['qteFP'];
 
-//Populate all units selectbox with units from webDB, use a callback to force waiting for the webDB result
-function loadUnitesSelect(callback) {
-	mywebdb.transaction(function (tx) {
-		tx.executeSql('SELECT * FROM Unites', [], function(tx, results) {
-			unitsArray = [];
-			var dataset = results.rows; 
-			//console.log("length:" + dataset.length);	//R: 
-			for(var i=0;i<dataset.length;i++){
-				var element=new Object();
-				element.UniteID=dataset.item(i).UniteID;
-				element.UniteSymbol=dataset.item(i).UniteSymbol;
-				unitsArray[i]=element;
-			}
-			//console.log(unitsArray);
-			callback(unitsArray);
-		}); // for tx.executeSql
-	});	//for mywebdb.transaction
-}
-// end FUNCTIONS related to DownloadUnits
+				if (FPitem['MaJdateFP']!="" || FPitem['MaJdateFP']!="1901-01-01"  ){	// 1901-01-01 is to NOT filter on date
+					MaJdateFiltreString = FPitem['MaJdateFP']; //The yyyy-mm-dd (ISO 8601) date format is not supported in Safari and IE.
+					MaJdateFiltreParsed = parseDate(MaJdateFiltreString); // 2012-12-31 -> Mon Dec 31 2012 00:00:00
+					MaJdateFiltreISO = MaJdateFiltreParsed.toISOString().substring(0, 10);	//Mon Dec 31 2012 00:00:00 -> console.log -> 2012-12-31
+					document.getElementById("MaJdateFiltre").value=MaJdateFiltreISO; //
+				}
+				else {
+					document.getElementById("MaJdateFiltre").value=""; //
+				}
 
-function getRadioVal(radioName) {
-  var rads = document.getElementsByName(radioName);
-  for(var rad in rads) {
-    if(rads[rad].checked)
-      return rads[rad].value;
-  }
-  return null;
-}
+				cbFaitFiltre = FPitem['cbFaitFP'];
+				if(cbFaitFiltre=="1"){ document.getElementById("cbFaitFiltre").checked=true;}
+				$('#cbFaitFiltre').checkboxradio('refresh');
 
-// begin FUNCTIONS related to SHOW FILTERED CONTACTS
-function loadFiltreParam() {
-	mywebdb.transaction(function (tx) {
-		tx.executeSql('SELECT * FROM FiltreParam WHERE id=?', [1], function (tx, FPresult) {
-		//tx.executeSql('SELECT TOP 1 FROM FiltreParam', [], function (tx, FPresult) {
-			var lenFParam = FPresult.rows.length;
-			FPdataset = FPresult.rows;
-			FPitem = FPdataset.item(0);
-			firstNameFiltre.value = FPitem['firstNameFP'];
-			lastNameFiltre.value = FPitem['lastNameFP'];
-			qteFiltre.value = FPitem['qteFP'];
+				rbABCFiltre = FPitem['rbABCFP'];
+				var eleFiltre = document.getElementsByName("rbABCFiltre");
+				for(var i=0;i<eleFiltre.length;i++){
+					if(eleFiltre[i].value == rbABCFiltre) { eleFiltre[i].checked = true; }
+				}
+				$('#rbABCFiltre').checkboxradio('refresh');
 
-			if (FPitem['MaJdateFP']!="" || FPitem['MaJdateFP']!="1901-01-01"  ){	// 1901-01-01 is to NOT filter on date
-				MaJdateFiltreString = FPitem['MaJdateFP']; //The yyyy-mm-dd (ISO 8601) date format is not supported in Safari and IE.
-				MaJdateFiltreParsed = parseDate(MaJdateFiltreString); // 2012-12-31 -> Mon Dec 31 2012 00:00:00
-				MaJdateFiltreISO = MaJdateFiltreParsed.toISOString().substring(0, 10);	//Mon Dec 31 2012 00:00:00 -> console.log -> 2012-12-31
-				document.getElementById("MaJdateFiltre").value=MaJdateFiltreISO; // 
-			}
-			else { 
-				document.getElementById("MaJdateFiltre").value=""; // 
-			}
+				var uniteSelectFiltre = $("#uniteSelectFiltre");
+				uniteSelectFiltre.val(FPitem['uniteIdFP']).attr('selected', true).siblings('option').removeAttr('selected'); 	//BUG if we want NONE
+				uniteSelectFiltre.selectmenu('refresh');
+				$('#uniteSelectFiltre').selectmenu('refresh');
 
-			cbFaitFiltre = FPitem['cbFaitFP'];
-			if(cbFaitFiltre=="1"){ document.getElementById("cbFaitFiltre").checked=true;}
-			$('#cbFaitFiltre').checkboxradio('refresh');
+				document.getElementById('Filtre').style.display='block';
+				document.getElementById('Liste').style.display='none';
+			}) // for tx.executeSql
+		}) // for mywebdb.transaction
+	}
 
-			rbABCFiltre = FPitem['rbABCFP'];
-			var eleFiltre = document.getElementsByName("rbABCFiltre");
-			for(var i=0;i<eleFiltre.length;i++){
-				if(eleFiltre[i].value == rbABCFiltre) { eleFiltre[i].checked = true; }
-			}
-			$('#rbABCFiltre').checkboxradio('refresh');
-
-			var uniteSelectFiltre = $("#uniteSelectFiltre");
-			uniteSelectFiltre.val(FPitem['uniteIdFP']).attr('selected', true).siblings('option').removeAttr('selected'); 	//BUG if we want NONE   
-			uniteSelectFiltre.selectmenu('refresh');
-			$('#uniteSelectFiltre').selectmenu('refresh');
-
-			document.getElementById('Filtre').style.display='block';
-			document.getElementById('Liste').style.display='none';
-		}) // for tx.executeSql
-	}) // for mywebdb.transaction
-}
-
-function updateFiltreParam() {
-	MaJdateFiltreNew=document.getElementById("MaJdateFiltre").value; // It records the new date in string format like "2013-05-01"
+	function updateFiltreParam() {
+		MaJdateFiltreNew=document.getElementById("MaJdateFiltre").value; // It records the new date in string format like "2013-05-01"
 // If we erase the date to not filter on the date.
-	if (document.getElementById("MaJdateFiltre").value=="")
+		if (document.getElementById("MaJdateFiltre").value=="")
 		{ MaJdateFiltreNew = "1901-01-01";}
-	else
+		else
 		{ MaJdateFiltreNew = document.getElementById("MaJdateFiltre").value;}
 
-	if(document.getElementById("cbFaitFiltre").checked){cbFaitFiltre="1";} else {cbFaitFiltre="0";} // Ça enregistre 1 si true et 0 si false dans la BD.
+		if(document.getElementById("cbFaitFiltre").checked){cbFaitFiltre="1";} else {cbFaitFiltre="0";} // Ça enregistre 1 si true et 0 si false dans la BD.
 
-	var rbABCFiltre = getRadioVal("rbABCFiltre");
+		var rbABCFiltre = getRadioVal("rbABCFiltre");
 
-	var uniteIdFiltre=document.getElementById("uniteSelectFiltre").value;
+		var uniteIdFiltre=document.getElementById("uniteSelectFiltre").value;
 
-	mywebdb.transaction(function(tx) {
-		//var sqlUpdateFiltreParam = "UPDATE FiltreParam SET firstNameFP = ?, lastNameFP = ?, qteFP = ?, MaJdateFP = ?, cbFaitFP = ?, rbABCFP = ?, uniteIdFP = ? WHERE id = 1";
-    	tx.executeSql("UPDATE FiltreParam SET firstNameFP = ?, lastNameFP = ?, qteFP = ?, MaJdateFP = ?, cbFaitFP = ?, rbABCFP = ?, uniteIdFP = ? WHERE id = 1",
+		mywebdb.transaction(function(tx) {
+			//var sqlUpdateFiltreParam = "UPDATE FiltreParam SET firstNameFP = ?, lastNameFP = ?, qteFP = ?, MaJdateFP = ?, cbFaitFP = ?, rbABCFP = ?, uniteIdFP = ? WHERE id = 1";
+			tx.executeSql("UPDATE FiltreParam SET firstNameFP = ?, lastNameFP = ?, qteFP = ?, MaJdateFP = ?, cbFaitFP = ?, rbABCFP = ?, uniteIdFP = ? WHERE id = 1",
 					[firstNameFiltre.value, lastNameFiltre.value, qteFiltre.value, MaJdateFiltreNew, cbFaitFiltre, rbABCFiltre, uniteIdFiltre]);
-	}); 
-	showFilteredRecords();
-}
+		});
+		showFilteredRecords();
+	}
 
-function showFilteredRecords() {	//Called by updateFiltreParam and syncWithServer
-	getFilterParam (function(myFilterParam) {
-		//Concatenation of the App record filter usable for Filter, Ajout and Edit 
-		sqlSelectFilteredContacts = 'SELECT * FROM Contacts WHERE 1 = 1';
-	
-		if (myFilterParam['firstNameFP']==""){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
-		else{sqlSelectFilteredContacts += ' AND firstName = "' + myFilterParam['firstNameFP'] +'"';}
-	
-		if (myFilterParam['lastNameFP']==""){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
-		else{sqlSelectFilteredContacts += ' AND lastName = "' + myFilterParam['lastNameFP'] +'"';}
-	
-		if (myFilterParam['qteFP']==""){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
-		else{sqlSelectFilteredContacts += ' AND qte = ' + myFilterParam['qteFP'];}
-	
+	function showFilteredRecords() {	//Called by updateFiltreParam and syncWithServer
+		getFilterParam (function(myFilterParam) {
+			//Concatenation of the App record filter usable for Filter, Ajout and Edit
+			sqlSelectFilteredContacts = 'SELECT * FROM Contacts WHERE 1 = 1';
+
+			if (myFilterParam['firstNameFP']==""){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
+			else{sqlSelectFilteredContacts += ' AND firstName = "' + myFilterParam['firstNameFP'] +'"';}
+
+			if (myFilterParam['lastNameFP']==""){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
+			else{sqlSelectFilteredContacts += ' AND lastName = "' + myFilterParam['lastNameFP'] +'"';}
+
+			if (myFilterParam['qteFP']==""){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
+			else{sqlSelectFilteredContacts += ' AND qte = ' + myFilterParam['qteFP'];}
+
 //		if (myFilterParam['MaJdateFP']=="1901-01-01"){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
 //		else{sqlSelectFilteredContacts += ' AND MaJdate = "' + myFilterParam['MaJdateFP'] +'"';}
-	
-		if (myFilterParam['uniteIdFP']=="0" || myFilterParam['uniteIdFP']=="" ){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
-		else{sqlSelectFilteredContacts += ' AND UniteID = "' + myFilterParam['uniteIdFP'] +'"';}	
-	
-		if (myFilterParam['cbFaitFP']=="1"){sqlSelectFilteredContacts += ' AND cbFait = 1 ';}
-		else{sqlSelectFilteredContacts += " AND 1 = 1 ";}	
-		
-		if (myFilterParam['rbABCFP']==""){ sqlSelectFilteredContacts += " AND 1 = 1 ";} // 
-		else{sqlSelectFilteredContacts += ' AND rbABC = "' + myFilterParam['rbABCFP'] +'"';}
-		//console.log('sqlSelectFilteredContacts :' + sqlSelectFilteredContacts); // R: GOOD
-		
+
+			if (myFilterParam['uniteIdFP']=="0" || myFilterParam['uniteIdFP']=="" ){ sqlSelectFilteredContacts += " AND 1 = 1 ";}
+			else{sqlSelectFilteredContacts += ' AND UniteID = "' + myFilterParam['uniteIdFP'] +'"';}
+
+			if (myFilterParam['cbFaitFP']=="1"){sqlSelectFilteredContacts += ' AND cbFait = 1 ';}
+			else{sqlSelectFilteredContacts += " AND 1 = 1 ";}
+
+			if (myFilterParam['rbABCFP']==""){ sqlSelectFilteredContacts += " AND 1 = 1 ";} //
+			else{sqlSelectFilteredContacts += ' AND rbABC = "' + myFilterParam['rbABCFP'] +'"';}
+			//console.log('sqlSelectFilteredContacts :' + sqlSelectFilteredContacts); // R: GOOD
+
 		});
 
 		listeItem.innerHTML = '';
@@ -462,256 +462,256 @@ function showFilteredRecords() {	//Called by updateFiltreParam and syncWithServe
 					item = dataset.item(i);
 					var idToDel = item['id'];
 					//console.log("idToDel :" + idToDel);
-					listeItem.innerHTML += 
-						'<tr>' 
-	//						+ '<td><a href="#" onclick="loadContact('+i+')" data-role="button" data-icon="arrow-r" data-mini="true" data-inline="true" data-iconpos="notext" data-theme="b" ></a></td>'
+					listeItem.innerHTML +=
+							'<tr>'
+								//						+ '<td><a href="#" onclick="loadContact('+i+')" data-role="button" data-icon="arrow-r" data-mini="true" data-inline="true" data-iconpos="notext" data-theme="b" ></a></td>'
 							+ '<td><a href="#" onclick="loadContact(' + i + ')" data-role="button" data-icon="arrow-r">Edit</a></td>'
-							+ '<td>' + item['id'] + '</td>' 
-							+ '<td>' + item['ContactID'] + '</td>' 
-							+ '<td>' + item['firstName'] + '</td>' 
-							+ '<td>' + item['MaJdate'] + '</td>' 
-							+ '<td>' + item['lastName'] + '</td>' 
-							+ '<td>' + item['cbFait'] + '</td>' 
-							+ '<td>' + item['qte'] + '</td>' 
-							+ '<td>' + item['rbABC'] + '</td>' 
-							+ '<td>' + item['UniteID'] + '</td>' 
-							+ '<td>' + item['last_sync_date'] + '</td>' 
+							+ '<td>' + item['id'] + '</td>'
+							+ '<td>' + item['ContactID'] + '</td>'
+							+ '<td>' + item['firstName'] + '</td>'
+							+ '<td>' + item['MaJdate'] + '</td>'
+							+ '<td>' + item['lastName'] + '</td>'
+							+ '<td>' + item['cbFait'] + '</td>'
+							+ '<td>' + item['qte'] + '</td>'
+							+ '<td>' + item['rbABC'] + '</td>'
+							+ '<td>' + item['UniteID'] + '</td>'
+							+ '<td>' + item['last_sync_date'] + '</td>'
 							+ '<td><a href="#" onclick="removeContact(' + idToDel + ');" data-role="button" data-icon="minus" >Delete</a></td>'
-						+ '</tr>';
+							+ '</tr>';
 				}
 			});
-		hideShow('Liste','Filtre');
-		hideShow('Liste','Ajout');
-		hideShow('Liste','Edit');
-	});
-}
-
-function getFilterParam(callback) {
-	filterParamArray = [];
-	mywebdb.transaction(function (tx) {
-		tx.executeSql('SELECT * FROM FiltreParam WHERE id=?', [1], function (tx, results) {
-			var dataset = results.rows;
-			var filterParam = dataset.item(0);
-			callback(filterParam);	// callback to pass the filterParam eventhough it's async.
-		}, null); // for tx.executeSql
-	}, null, null); // for mywebdb.transac
-}
-// end FUNCTIONS related to SHOW FILTERED CONTACTS
-
-// begin FUNCTIONS related to insertContat()
-function insertContact() {
-	var dateStringAdd = document.getElementById("MaJdateAdd").value;
-
-	//alert(getRadioVal("rbABCAdd"));
-	var rbABCAdd = getRadioVal("rbABCAdd"); // to replace eventualy
-	//$('input[@name="rbABCAdd"]:checked').val(); // en jQuery, to try et enlever la fonction getRadioVal. 
-	if(document.getElementById("cbFaitAdd").checked){cbFaitAdd="1";} else {cbFaitAdd="0";}; // Ça enregistre i si true et 0 si false dans la BD
-	var uniteIdAdd = document.getElementById("uniteSelectAdd").value; // Ça marche
-
-	mywebdb.transaction(function(tx) {
-		tx.executeSql("INSERT INTO Contacts (contactID, firstName, lastName, qte, MaJdate, cbFait, rbABC, uniteId) VALUES (?, ?, ?, ?, ?, ?, ?, ?);", 
-						['-1', firstNameAdd.value, lastNameAdd.value, qteAdd.value, dateStringAdd, cbFaitAdd, rbABCAdd, uniteIdAdd], resetFormAndShow, onError);
-	});
-}
- 
-function resetFormAndShow(){
-	resetForm();
-	showFilteredRecords();
-}
-
-function resetForm(){
-	idAdd.value = ''; 
-	firstNameAdd.value = '';
-	lastNameAdd.value = '';
-	qteAdd.value = '';
-
-	var currentDate = new Date(); // to be sure that the object MaJdate could be a JS date type
-	var currentDateISO = currentDate.toISOString().substring(0, 10); // converts a Date object into a string, using the ISO-8601 and the format is: YYYY-MM-DDTHH:mm:ss.sssZ
-	document.getElementById("MaJdateAdd").value=currentDateISO; // populate the HTML5 INPUT date of Ajout with the today's date
-
-	$('#cbFaitAdd').attr('checked', false).checkboxradio('refresh');
-	//$("#cbFaitEdit").prop("checked", false).checkboxradio("refresh" );
-	//document.getElementById("cbFait").checked=false; 
-	//document.getElementById("cbFaitEdit").checked=false; 
-
-	var rbElem = document.getElementsByName("rbABCAdd");
-	for(var i=0;i<rbElem.length;i++){										// put all bottons to false, if not, we will have many radio buttons to true
-		var rbIdN = "rbABCAdd";
-		var IdN = i + 1;
-		rbIdN += IdN; 
-		$('#' + rbIdN).prop('checked', false).checkboxradio("refresh");	//Since the radio buttons are decorated by jQuery Mobile you need to refresh it if you change them
-	}
-
-	document.getElementById("uniteSelectAdd").options[0].selected=true; 
-}
-// end FUNCTIONS related to insertContat()
-
-//Fonction pour que Safari puisse lire la date de la BD, car Safari n'accepte pas le format aaaa-mm-jj , ni aaaa/mm/jj
-//parseDate('2011-12-31'); // '2011-12-31' -> Mon Dec 31 2011 00:00:00
-function parseDate(input) {
-	var parts = input.match(/(\d+)/g);
-	return new Date(parts[0], parts[1]-1, parts[2]);
-	//Solution 2?
-	//var dateParts = "2012-12-31".split("-");
-	//var your_date = new Date(dateParts[0], dateParts[1]-1, dateParts[2]);
-}
-
-// begin FUNCTIONS related to edit conctact
-function loadContact(i) {
-	var itemSel = dataset.item(i); 
-	idEdit.value = itemSel['id'];
-	firstNameEdit.value = itemSel['firstName'];
-	lastNameEdit.value = itemSel['lastName'];
-	qteEdit.value = itemSel['qte'];
-	MaJdateEditString = itemSel['MaJdate'];	//format '2011-12-31' accepté par Chrome, mais Safari n'accepte que le format 2011/12/31. The yyyy-mm-dd (ISO 8601) date format is not supported in Safari and IE.
-	MaJdateEditParsed = parseDate(MaJdateEditString); // 2012-12-31 -> Mon Dec 31 2012 00:00:00
-	MaJdateEditISO = MaJdateEditParsed.toISOString().substring(0, 10);	//Mon Dec 31 2012 00:00:00 -> console.log -> 2012-12-31
-	console.log(MaJdateEditISO);
-	document.getElementById("MaJdateEdit").value=MaJdateEditISO; // 
-
-	cbFaitEdit = itemSel['cbFait'];
-	if(cbFaitEdit=="1"){ $('#cbFaitEdit').prop('checked',true).checkboxradio('refresh');}
-	else{ $('#cbFaitEdit').prop('checked',false).checkboxradio('refresh');}
- 
-	var rbABCdbValue = itemSel['rbABC'];
-	var rbElem = document.getElementsByName("rbABCEdit");
-	for(var i=0;i<rbElem.length;i++){										// Put all bottons to false
-		var rbIdN = "rbABCEdit";
-		var IdN = i + 1;
-		rbIdN += IdN; 
-		if(rbElem[i].value == rbABCdbValue) { 
-			$('#' + rbIdN).prop('checked', true).checkboxradio("refresh");	//Since the radio buttons are decorated by jQuery Mobile you need to refresh it if you change them
-		}
-		else {
-			$('#' + rbIdN).prop('checked', false).checkboxradio("refresh");	//Since the radio buttons are decorated by jQuery Mobile you need to refresh it if you change them
-		}
-	}
-
-	var uniteSelectEdit = $("#uniteSelectEdit");
-	uniteSelectEdit.val(itemSel['UniteID']).attr('selected', true).siblings('option').removeAttr('selected');    
-	uniteSelectEdit.selectmenu('refresh');
-	$('#uniteSelectEdit').selectmenu('refresh');
-
-	hideShow('Edit','Liste');
-}
-
-function updateContact() {
-	var MaJdateEdit=document.getElementById("MaJdateEdit").value; // Ça enregistre la nouvelle date en formet string "2013-05-02"
-
-	if(document.getElementById("cbFaitEdit").checked){cbFaitEdit="1";} else {cbFaitEdit="0";} // Ça enregistre 1 si true et 0 si false dans la BD. :-)
-
-	var rbABCEdit = getRadioVal("rbABCEdit");
-	//$('input[@name="rbABCEdit"]:checked').val(); // in jQuery. to try and remove the fonction getRadioVal. 
-
-	var uniteIdEdit=document.getElementById("uniteSelectEdit").value;
-	mywebdb.transaction(function(tx) {
-		//var sqlUpdateContact = "UPDATE Contacts SET firstName = ?, lastName = ?, qte = ?, MaJdate = ?, cbFait = ?, rbABC = ?, UniteID = ? WHERE id = ?";
-    	tx.executeSql("UPDATE Contacts SET firstName = ?, lastName = ?, qte = ?, MaJdate = ?, cbFait = ?, rbABC = ?, UniteID = ? WHERE id = ?", [firstNameEdit.value, lastNameEdit.value, qteEdit.value, MaJdateEdit, cbFaitEdit, rbABCEdit, uniteIdEdit, idEdit.value], resetFormAndShow, onError);
-	}); 
-}
-// end FUNCTIONS related to edit Contact
-
-function removeContact(id) {	//Changed deleteContact(id) to removeContacts(id) to work or change deleteContact to sqlDeleteContact in tx.executeSql. 
-	var r=confirm("Do you really want to delete this record?");	// Confirm box
-	if (r==true) {
-		mywebdb.transaction(function(tx) {
-			tx.executeSql("DELETE FROM Contacts WHERE id=?", [id], showFilteredRecords(), onError);
+			hideShow('Liste','Filtre');
+			hideShow('Liste','Ajout');
+			hideShow('Liste','Edit');
 		});
 	}
-}
 
-// begin FUNCTIONS related to edit loginParam
-function loadLoginParam() {	//called by Liste form button PARAMETER
-	mywebdb.transaction(function (tx) {
-		// To try: tx.executeSql('SELECT TOP 1 FROM UserParam', [], function (tx, UPresult) {
-		tx.executeSql('SELECT * FROM UserParam WHERE id=?', [1], function (tx, UPresult) {
-			console.log("UPresult.rows.length" + UPresult.rows.length);
-			dataset = UPresult.rows;
-			loginParam = dataset.item(0);
-			userIdEdit.value = loginParam['userId'];
-			userPasswordEdit.value = loginParam['password'];
-			userEmailEdit.value = loginParam['email'];
-		}); // for tx.executeSql
-	}); // for mywebdb.transac
-	hideShow('LoginParamEdit','Liste');
-}
+	function getFilterParam(callback) {
+		filterParamArray = [];
+		mywebdb.transaction(function (tx) {
+			tx.executeSql('SELECT * FROM FiltreParam WHERE id=?', [1], function (tx, results) {
+				var dataset = results.rows;
+				var filterParam = dataset.item(0);
+				callback(filterParam);	// callback to pass the filterParam eventhough it's async.
+			}, null); // for tx.executeSql
+		}, null, null); // for mywebdb.transac
+	}
+	// end FUNCTIONS related to SHOW FILTERED CONTACTS
 
-function updateLoginParam() {	//called by loginParam form button MODIFY
-	mywebdb.transaction(function(tx) {
-    	//tx.executeSql(sqlUpdateUserParam, [userIdEdit.value, passwordEdit.value, emailEdit.value], hideShow('Liste','Edit'), onError);
-    	//tx.executeSql(sqlUpdateUserParam, [username, password, userEmailEdit.value]);
-		//var sqlUpdateUserParam = "UPDATE UserParam SET userId = ?, password = ?, email = ? WHERE id = 1";
-    	tx.executeSql("UPDATE UserParam SET userId = ?, password = ?, email = ? WHERE id = 1", [userIdEdit.value, userPasswordEdit.value, userEmailEdit.value]);
-    });
-	syncWithServer(function(syncSuccess){		// callback is used to wait the server query result.  The data is received from the server when syncSuccess is true.
-		if(syncSuccess==true){
-			mywebdb.transaction(function(tx){
-				tx.executeSql("DELETE FROM Unites WHERE UniteID= -1"); 	// We must insert at least one row in the DB  with a -1 id to have a first id equal to 0 like MySQL. Strange! Then we can delete our -1 row.
-			});
-			loadUnitesSelect(function(unitsArray) {	//the function is a callback to wait for the query result.
-				var txt   = "";
-				for (i=0; i < unitsArray.length; i++){
-					txt=txt + "<option value=" + unitsArray[i].UniteID + ">" + unitsArray[i].UniteID + " " + "Catégorie" + " - " + unitsArray[i].UniteSymbol + "</option>"; // BUG: l'option 0 n'est pas selected pour Ajout et Filtre
-				}
-				var txtAdd    = "<option value='0'>--Choisir une unité--</option>" + txt;
-				var txtEdit   = "" + txt;
-				var txtFiltre = "<option value='0'>--Toutes les unités--</option>" + txt;
-				document.getElementById("uniteSelectAdd").innerHTML=txtAdd;
-				document.getElementById("uniteSelectEdit").innerHTML=txtEdit;
-				document.getElementById("uniteSelectFiltre").innerHTML=txtFiltre;
-			});
+	// begin FUNCTIONS related to insertContat()
+	function insertContact() {
+		var dateStringAdd = document.getElementById("MaJdateAdd").value;
+
+		//alert(getRadioVal("rbABCAdd"));
+		var rbABCAdd = getRadioVal("rbABCAdd"); // to replace eventualy
+		//$('input[@name="rbABCAdd"]:checked').val(); // en jQuery, to try et enlever la fonction getRadioVal.
+		if(document.getElementById("cbFaitAdd").checked){cbFaitAdd="1";} else {cbFaitAdd="0";}; // Ça enregistre i si true et 0 si false dans la BD
+		var uniteIdAdd = document.getElementById("uniteSelectAdd").value; // Ça marche
+
+		mywebdb.transaction(function(tx) {
+			tx.executeSql("INSERT INTO Contacts (contactID, firstName, lastName, qte, MaJdate, cbFait, rbABC, uniteId) VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
+					['-1', firstNameAdd.value, lastNameAdd.value, qteAdd.value, dateStringAdd, cbFaitAdd, rbABCAdd, uniteIdAdd], resetFormAndShow, onError);
+		});
+	}
+
+	function resetFormAndShow(){
+		resetForm();
+		showFilteredRecords();
+	}
+
+	function resetForm(){
+		idAdd.value = '';
+		firstNameAdd.value = '';
+		lastNameAdd.value = '';
+		qteAdd.value = '';
+
+		var currentDate = new Date(); // to be sure that the object MaJdate could be a JS date type
+		var currentDateISO = currentDate.toISOString().substring(0, 10); // converts a Date object into a string, using the ISO-8601 and the format is: YYYY-MM-DDTHH:mm:ss.sssZ
+		document.getElementById("MaJdateAdd").value=currentDateISO; // populate the HTML5 INPUT date of Ajout with the today's date
+
+		$('#cbFaitAdd').attr('checked', false).checkboxradio('refresh');
+		//$("#cbFaitEdit").prop("checked", false).checkboxradio("refresh" );
+		//document.getElementById("cbFait").checked=false;
+		//document.getElementById("cbFaitEdit").checked=false;
+
+		var rbElem = document.getElementsByName("rbABCAdd");
+		for(var i=0;i<rbElem.length;i++){										// put all bottons to false, if not, we will have many radio buttons to true
+			var rbIdN = "rbABCAdd";
+			var IdN = i + 1;
+			rbIdN += IdN;
+			$('#' + rbIdN).prop('checked', false).checkboxradio("refresh");	//Since the radio buttons are decorated by jQuery Mobile you need to refresh it if you change them
 		}
-	});
-	hideShow('Liste','LoginParamEdit');
-}
-// end FUNCTIONS related to edit loginParam
-      
-// begin FUNCTIONS for testing server communication
-// test to know if the server accept a json from the webSqlApp, if it create a INSERT INTO to MySQL from the json //and if it return a json from a MySQL query 
-/*
-function syncUploadUnits() {
-	myURL = SYNCDATA.url + '/' +	'syncUploadUnits.php';
-	//saveBandwidth (default false): if true, the client will not send a request to the server if there is no local changes
-	saveBandwidth = true; //3e argument de syncNow dans la version 130808 de webSqlSync
-    $.getJSON(myURL, function(myJsonObject) {
-		DBSYNC.syncNow(saveBandwidth, callBackProgress, function(result2) {
-			if (result2.syncOK === true) {
-				alert("mySync Success ");  //Synchronized successfully
+
+		document.getElementById("uniteSelectAdd").options[0].selected=true;
+	}
+	// end FUNCTIONS related to insertContat()
+
+	//Fonction pour que Safari puisse lire la date de la BD, car Safari n'accepte pas le format aaaa-mm-jj , ni aaaa/mm/jj
+	//parseDate('2011-12-31'); // '2011-12-31' -> Mon Dec 31 2011 00:00:00
+	function parseDate(input) {
+		var parts = input.match(/(\d+)/g);
+		return new Date(parts[0], parts[1]-1, parts[2]);
+		//Solution 2?
+		//var dateParts = "2012-12-31".split("-");
+		//var your_date = new Date(dateParts[0], dateParts[1]-1, dateParts[2]);
+	}
+
+	// begin FUNCTIONS related to edit conctact
+	function loadContact(i) {
+		var itemSel = dataset.item(i);
+		idEdit.value = itemSel['id'];
+		firstNameEdit.value = itemSel['firstName'];
+		lastNameEdit.value = itemSel['lastName'];
+		qteEdit.value = itemSel['qte'];
+		MaJdateEditString = itemSel['MaJdate'];	//format '2011-12-31' accepté par Chrome, mais Safari n'accepte que le format 2011/12/31. The yyyy-mm-dd (ISO 8601) date format is not supported in Safari and IE.
+		MaJdateEditParsed = parseDate(MaJdateEditString); // 2012-12-31 -> Mon Dec 31 2012 00:00:00
+		MaJdateEditISO = MaJdateEditParsed.toISOString().substring(0, 10);	//Mon Dec 31 2012 00:00:00 -> console.log -> 2012-12-31
+		console.log(MaJdateEditISO);
+		document.getElementById("MaJdateEdit").value=MaJdateEditISO; //
+
+		cbFaitEdit = itemSel['cbFait'];
+		if(cbFaitEdit=="1"){ $('#cbFaitEdit').prop('checked',true).checkboxradio('refresh');}
+		else{ $('#cbFaitEdit').prop('checked',false).checkboxradio('refresh');}
+
+		var rbABCdbValue = itemSel['rbABC'];
+		var rbElem = document.getElementsByName("rbABCEdit");
+		for(var i=0;i<rbElem.length;i++){										// Put all bottons to false
+			var rbIdN = "rbABCEdit";
+			var IdN = i + 1;
+			rbIdN += IdN;
+			if(rbElem[i].value == rbABCdbValue) {
+				$('#' + rbIdN).prop('checked', true).checkboxradio("refresh");	//Since the radio buttons are decorated by jQuery Mobile you need to refresh it if you change them
 			}
 			else {
-				alert("mySyncNow Ln877 Not done"); //Synchronized error
+				$('#' + rbIdN).prop('checked', false).checkboxradio("refresh");	//Since the radio buttons are decorated by jQuery Mobile you need to refresh it if you change them
 			}
-		}); // to close the DBSYNC.syncNow
-	}); // to close the jQuery.getJSON
-}
-*/
-function hideShow(shown, hidden) {
-	document.getElementById(shown).style.display='block';
-	document.getElementById(hidden).style.display='none';
-	return false;
-}
+		}
 
-// message, percent and msgKey comes from syncNow of webSqlSync.js line 128 and 136
-// Ex: message= "mon message", percent= 20, msgKey= "sendData"  
-function callBackProgress (message, percent, msgKey) {
-	console.log(message+' ('+percent+'%)');
-	$('#uiProgress').html(message+' ('+percent+'%)');
-}
+		var uniteSelectEdit = $("#uniteSelectEdit");
+		uniteSelectEdit.val(itemSel['UniteID']).attr('selected', true).siblings('option').removeAttr('selected');
+		uniteSelectEdit.selectmenu('refresh');
+		$('#uniteSelectEdit').selectmenu('refresh');
 
-function onError(tx, error) {
-	alert(error.message);
-}
+		hideShow('Edit','Liste');
+	}
 
-function dropTables() {
-	mywebdb.transaction(function(tx) {
-    	tx.executeSql("DROP TABLE Contacts", []);
-    	tx.executeSql("DROP TABLE Unites", []);
-    	tx.executeSql("DROP TABLE FiltreParam", []);
-    	tx.executeSql("DROP TABLE UserParam", []);
-    	tx.executeSql("DROP TABLE new_elem", []);
-    	tx.executeSql("DROP TABLE sync_info", []);
-    });
-	resetForm();
-}
+	function updateContact() {
+		var MaJdateEdit=document.getElementById("MaJdateEdit").value; // Ça enregistre la nouvelle date en formet string "2013-05-02"
+
+		if(document.getElementById("cbFaitEdit").checked){cbFaitEdit="1";} else {cbFaitEdit="0";} // Ça enregistre 1 si true et 0 si false dans la BD. :-)
+
+		var rbABCEdit = getRadioVal("rbABCEdit");
+		//$('input[@name="rbABCEdit"]:checked').val(); // in jQuery. to try and remove the fonction getRadioVal.
+
+		var uniteIdEdit=document.getElementById("uniteSelectEdit").value;
+		mywebdb.transaction(function(tx) {
+			//var sqlUpdateContact = "UPDATE Contacts SET firstName = ?, lastName = ?, qte = ?, MaJdate = ?, cbFait = ?, rbABC = ?, UniteID = ? WHERE id = ?";
+			tx.executeSql("UPDATE Contacts SET firstName = ?, lastName = ?, qte = ?, MaJdate = ?, cbFait = ?, rbABC = ?, UniteID = ? WHERE id = ?", [firstNameEdit.value, lastNameEdit.value, qteEdit.value, MaJdateEdit, cbFaitEdit, rbABCEdit, uniteIdEdit, idEdit.value], resetFormAndShow, onError);
+		});
+	}
+	// end FUNCTIONS related to edit Contact
+
+	function removeContact(id) {	//Changed deleteContact(id) to removeContacts(id) to work or change deleteContact to sqlDeleteContact in tx.executeSql.
+		var r=confirm("Do you really want to delete this record?");	// Confirm box
+		if (r==true) {
+			mywebdb.transaction(function(tx) {
+				tx.executeSql("DELETE FROM Contacts WHERE id=?", [id], showFilteredRecords(), onError);
+			});
+		}
+	}
+
+	// begin FUNCTIONS related to edit loginParam
+	function loadLoginParam() {	//called by Liste form button PARAMETER
+		mywebdb.transaction(function (tx) {
+			// To try: tx.executeSql('SELECT TOP 1 FROM UserParam', [], function (tx, UPresult) {
+			tx.executeSql('SELECT * FROM UserParam WHERE id=?', [1], function (tx, UPresult) {
+				console.log("UPresult.rows.length" + UPresult.rows.length);
+				dataset = UPresult.rows;
+				loginParam = dataset.item(0);
+				userIdEdit.value = loginParam['userId'];
+				userPasswordEdit.value = loginParam['password'];
+				userEmailEdit.value = loginParam['email'];
+			}); // for tx.executeSql
+		}); // for mywebdb.transac
+		hideShow('LoginParamEdit','Liste');
+	}
+
+	function updateLoginParam() {	//called by loginParam form button MODIFY
+		mywebdb.transaction(function(tx) {
+			//tx.executeSql(sqlUpdateUserParam, [userIdEdit.value, passwordEdit.value, emailEdit.value], hideShow('Liste','Edit'), onError);
+			//tx.executeSql(sqlUpdateUserParam, [username, password, userEmailEdit.value]);
+			//var sqlUpdateUserParam = "UPDATE UserParam SET userId = ?, password = ?, email = ? WHERE id = 1";
+			tx.executeSql("UPDATE UserParam SET userId = ?, password = ?, email = ? WHERE id = 1", [userIdEdit.value, userPasswordEdit.value, userEmailEdit.value]);
+		});
+		syncWithServer(function(syncSuccess){		// callback is used to wait the server query result.  The data is received from the server when syncSuccess is true.
+			if(syncSuccess==true){
+				mywebdb.transaction(function(tx){
+					tx.executeSql("DELETE FROM Unites WHERE UniteID= -1"); 	// We must insert at least one row in the DB  with a -1 id to have a first id equal to 0 like MySQL. Strange! Then we can delete our -1 row.
+				});
+				loadUnitesSelect(function(unitsArray) {	//the function is a callback to wait for the query result.
+					var txt   = "";
+					for (i=0; i < unitsArray.length; i++){
+						txt=txt + "<option value=" + unitsArray[i].UniteID + ">" + unitsArray[i].UniteID + " " + "Catégorie" + " - " + unitsArray[i].UniteSymbol + "</option>"; // BUG: l'option 0 n'est pas selected pour Ajout et Filtre
+					}
+					var txtAdd    = "<option value='0'>--Choisir une unité--</option>" + txt;
+					var txtEdit   = "" + txt;
+					var txtFiltre = "<option value='0'>--Toutes les unités--</option>" + txt;
+					document.getElementById("uniteSelectAdd").innerHTML=txtAdd;
+					document.getElementById("uniteSelectEdit").innerHTML=txtEdit;
+					document.getElementById("uniteSelectFiltre").innerHTML=txtFiltre;
+				});
+			}
+		});
+		hideShow('Liste','LoginParamEdit');
+	}
+	// end FUNCTIONS related to edit loginParam
+
+	// begin FUNCTIONS for testing server communication
+	// test to know if the server accept a json from the webSqlApp, if it create a INSERT INTO to MySQL from the json //and if it return a json from a MySQL query
+	/*
+	 function syncUploadUnits() {
+	 myURL = SYNCDATA.url + '/' +	'syncUploadUnits.php';
+	 //saveBandwidth (default false): if true, the client will not send a request to the server if there is no local changes
+	 saveBandwidth = true; //3e argument de syncNow dans la version 130808 de webSqlSync
+	 $.getJSON(myURL, function(myJsonObject) {
+	 DBSYNC.syncNow(saveBandwidth, callBackProgress, function(result2) {
+	 if (result2.syncOK === true) {
+	 alert("mySync Success ");  //Synchronized successfully
+	 }
+	 else {
+	 alert("mySyncNow Ln877 Not done"); //Synchronized error
+	 }
+	 }); // to close the DBSYNC.syncNow
+	 }); // to close the jQuery.getJSON
+	 }
+	 */
+	function hideShow(shown, hidden) {
+		document.getElementById(shown).style.display='block';
+		document.getElementById(hidden).style.display='none';
+		return false;
+	}
+
+	// message, percent and msgKey comes from syncNow of webSqlSync.js line 128 and 136
+	// Ex: message= "mon message", percent= 20, msgKey= "sendData"
+	function callBackProgress (message, percent, msgKey) {
+		console.log(message+' ('+percent+'%)');
+		$('#uiProgress').html(message+' ('+percent+'%)');
+	}
+
+	function onError(tx, error) {
+		alert(error.message);
+	}
+
+	function dropTables() {
+		mywebdb.transaction(function(tx) {
+			tx.executeSql("DROP TABLE Contacts", []);
+			tx.executeSql("DROP TABLE Unites", []);
+			tx.executeSql("DROP TABLE FiltreParam", []);
+			tx.executeSql("DROP TABLE UserParam", []);
+			tx.executeSql("DROP TABLE new_elem", []);
+			tx.executeSql("DROP TABLE sync_info", []);
+		});
+		resetForm();
+	}
 </script>
 </html>​
